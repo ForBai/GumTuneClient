@@ -1,14 +1,13 @@
 package rosegold.gumtuneclient.modules.world;
 
 import kotlin.Triple;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.util.*;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
@@ -203,8 +202,13 @@ public class WorldScanner {
         }
         if (WorldScannerFilter.worldScannerCHFairyGrottos) {
             for (BlockPos blockPos : currentWorld.getFairyGrottos().keySet()) {
-                RenderUtils.renderEspBox(blockPos, event.partialTicks, Color.PINK.getRGB());
-                RenderUtils.renderWaypointText("§dFairy Grotto", blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5, event.partialTicks);
+                if (blockPos.getY() < 64) {
+                    RenderUtils.renderEspBox(blockPos, event.partialTicks, Color.YELLOW.getRGB());
+                    RenderUtils.renderWaypointText("§eMagma Fields §dFairy Grotto", blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5, event.partialTicks);
+                } else {
+                    RenderUtils.renderEspBox(blockPos, event.partialTicks, Color.PINK.getRGB());
+                    RenderUtils.renderWaypointText("§dFairy Grotto", blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5, event.partialTicks);
+                }
                 if (WorldScannerFilter.worldScannerCHFairyGrottosBeacon)
                     RenderUtils.renderBeacon(blockPos, Color.PINK, event.partialTicks);
             }
