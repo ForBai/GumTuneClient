@@ -67,6 +67,37 @@ public enum Structure {
         add(new Triple<>(Blocks.stained_glass, BlockColored.COLOR, EnumDyeColor.MAGENTA));
     }}, StructureType.FAIRY_GROTTO, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.ANY, "", 0, 0, 0),
 
+    FAIRY_GROTTO_SHRINE(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
+        add(new Triple<>(Blocks.stained_glass, BlockColored.COLOR, EnumDyeColor.PINK));
+        add(new Triple<>(Blocks.stone, null, null));
+        add(new Triple<>(Blocks.water, null, null));
+        add(new Triple<>(Blocks.water, null, null));
+        add(new Triple<>(Blocks.water, null, null));
+        add(new Triple<>(Blocks.clay, null, null));
+    }}, StructureType.FAIRY_GROTTO_EXTRA, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.ANY, "Shrine ↓", 0, 0, 0),
+
+    FAIRY_GROTTO_WATERFALLS(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
+        add(new Triple<>(Blocks.stonebrick, null, null));
+        add(new Triple<>(Blocks.stone_brick_stairs, null, null));
+        add(new Triple<>(Blocks.cobblestone_wall, BlockWall.VARIANT, BlockWall.EnumType.MOSSY));
+        add(new Triple<>(Blocks.cobblestone_wall, null, null));
+        add(new Triple<>(Blocks.cobblestone_wall, null, null));
+        add(new Triple<>(Blocks.cobblestone_wall, null, null));
+        add(new Triple<>(Blocks.air, null, null));
+        add(new Triple<>(Blocks.cobblestone_wall, BlockWall.VARIANT, BlockWall.EnumType.MOSSY));
+        add(new Triple<>(Blocks.cobblestone_wall, null, null));
+    }}, StructureType.FAIRY_GROTTO_EXTRA, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.ANY, "Waterfalls ↓", 0, 0, 0),
+
+    FAIRY_GROTTO_PALACE(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
+        add(new Triple<>(Blocks.mossy_cobblestone, null, null));
+        add(new Triple<>(Blocks.stone, BlockStone.VARIANT, BlockStone.EnumType.ANDESITE_SMOOTH));
+        add(new Triple<>(Blocks.stone, BlockStone.VARIANT, BlockStone.EnumType.ANDESITE));
+        add(new Triple<>(null, null, null));
+        add(new Triple<>(null, null, null));
+        add(new Triple<>(null, null, null));
+        add(new Triple<>(Blocks.stone, BlockStone.VARIANT, BlockStone.EnumType.ANDESITE));
+    }}, StructureType.FAIRY_GROTTO_EXTRA, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.ANY, "Palace", 0, 0, 0),
+
     GOBLIN_HALL(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
         add(new Triple<>(Blocks.planks, BlockPlanks.VARIANT, BlockPlanks.EnumType.SPRUCE)); // 0
         add(new Triple<>(null, null, null)); // 1
