@@ -8,6 +8,7 @@ import net.minecraft.item.EnumDyeColor;
 import rosegold.gumtuneclient.utils.LocationUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public enum Structure {
     QUEEN(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
@@ -74,6 +75,7 @@ public enum Structure {
         add(new Triple<>(Blocks.water, null, null));
         add(new Triple<>(Blocks.water, null, null));
         add(new Triple<>(Blocks.clay, null, null));
+        Collections.reverse(this);
     }}, StructureType.FAIRY_GROTTO_EXTRA, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.ANY, "Shrine ↓", 0, 0, 0),
 
     FAIRY_GROTTO_WATERFALLS(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
@@ -86,6 +88,7 @@ public enum Structure {
         add(new Triple<>(Blocks.air, null, null));
         add(new Triple<>(Blocks.cobblestone_wall, BlockWall.VARIANT, BlockWall.EnumType.MOSSY));
         add(new Triple<>(Blocks.cobblestone_wall, null, null));
+        Collections.reverse(this);
     }}, StructureType.FAIRY_GROTTO_EXTRA, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.ANY, "Waterfalls ↓", 0, 0, 0),
 
     FAIRY_GROTTO_PALACE(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
@@ -96,7 +99,25 @@ public enum Structure {
         add(new Triple<>(null, null, null));
         add(new Triple<>(null, null, null));
         add(new Triple<>(Blocks.stone, BlockStone.VARIANT, BlockStone.EnumType.ANDESITE));
+        Collections.reverse(this);
     }}, StructureType.FAIRY_GROTTO_EXTRA, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.ANY, "Palace", 0, 0, 0),
+
+    FAIRY_GROTTO_MANSION(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
+        add(new Triple<>(Blocks.stonebrick, null, null));
+        add(new Triple<>(Blocks.torch, null, null));
+        add(new Triple<>(Blocks.cobblestone_wall, null, null));
+        add(new Triple<>(Blocks.stonebrick, BlockStoneBrick.VARIANT, BlockStoneBrick.EnumType.MOSSY));
+        add(new Triple<>(Blocks.stonebrick, null, null));
+        add(new Triple<>(null, null, null));
+        add(new Triple<>(null, null, null));
+        add(new Triple<>(null, null, null));
+        add(new Triple<>(Blocks.stonebrick, null, null));
+        add(new Triple<>(null, null, null));
+        add(new Triple<>(Blocks.grass, null, null));
+        add(new Triple<>(Blocks.grass, null, null));
+        add(new Triple<>(Blocks.grass, null, null));
+        Collections.reverse(this);
+    }}, StructureType.FAIRY_GROTTO_EXTRA, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.ANY, "Mansion", 0, 0, 0),
 
     GOBLIN_HALL(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
         add(new Triple<>(Blocks.planks, BlockPlanks.VARIANT, BlockPlanks.EnumType.SPRUCE)); // 0
@@ -174,7 +195,7 @@ public enum Structure {
         add(new Triple<>(Blocks.stonebrick, null, null)); // 25
         add(new Triple<>(Blocks.fire, null, null)); // 26
         add(new Triple<>(Blocks.stonebrick, null, null)); // 27
-    }},StructureType.CH_MOB_SPOTS,LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.MITHRIL_DEPOSITS, "§bCorleone Dock",23,11,17),
+    }}, StructureType.CH_MOB_SPOTS, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.MITHRIL_DEPOSITS, "§bCorleone Dock", 23, 11, 17),
     CORLEONE_HOLE(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
         add(new Triple<>(Blocks.stone_slab, BlockSlab.HALF, BlockSlab.EnumBlockHalf.BOTTOM)); // 0
         add(new Triple<>(null, null, null)); // 1
@@ -195,7 +216,7 @@ public enum Structure {
         add(new Triple<>(null, null, null)); // 16
         add(new Triple<>(Blocks.stone_slab, BlockSlab.HALF, BlockSlab.EnumBlockHalf.TOP)); // 17
         add(new Triple<>(Blocks.stonebrick, null, null)); // 18
-    }},StructureType.CH_MOB_SPOTS,LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.MITHRIL_DEPOSITS, "§bCorleone Hole",0,-3,34),
+    }}, StructureType.CH_MOB_SPOTS, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.MITHRIL_DEPOSITS, "§bCorleone Hole", 0, -3, 34),
     GRUNT_RAILS_1(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
         add(new Triple<>(Blocks.planks, BlockPlanks.VARIANT, BlockPlanks.EnumType.SPRUCE)); // 0
         add(new Triple<>(null, null, null)); // 1
@@ -206,7 +227,7 @@ public enum Structure {
         add(new Triple<>(null, null, null)); // 6
         add(new Triple<>(Blocks.planks, BlockPlanks.VARIANT, BlockPlanks.EnumType.SPRUCE)); // 7
         add(new Triple<>(Blocks.tnt, null, null)); // 8
-    }},StructureType.CH_MOB_SPOTS,LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.MITHRIL_DEPOSITS, "§bGrunt Rails 1",0,0,0),
+    }}, StructureType.CH_MOB_SPOTS, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.MITHRIL_DEPOSITS, "§bGrunt Rails 1", 0, 0, 0),
     GRUNT_HERO_STATUE(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
         add(new Triple<>(Blocks.stone_slab, BlockSlab.HALF, BlockSlab.EnumBlockHalf.TOP)); // 0
         add(new Triple<>(Blocks.stone, BlockStone.VARIANT, BlockStone.EnumType.DIORITE)); // 1
@@ -217,7 +238,7 @@ public enum Structure {
         add(new Triple<>(Blocks.stone, BlockStone.VARIANT, BlockStone.EnumType.ANDESITE_SMOOTH)); // 6
         add(new Triple<>(Blocks.cobblestone, null, null)); // 7
         add(new Triple<>(Blocks.stone_stairs, null, null)); // 8
-    }},StructureType.CH_MOB_SPOTS,LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.MITHRIL_DEPOSITS, "§bGrunt Hero Statue",0,0,0),
+    }}, StructureType.CH_MOB_SPOTS, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.MITHRIL_DEPOSITS, "§bGrunt Hero Statue", 0, 0, 0),
     SMALL_GRUNT_BRIDGE(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
         add(new Triple<>(Blocks.spruce_stairs, null, null)); // 0
         add(new Triple<>(Blocks.spruce_stairs, null, null)); // 1
@@ -226,7 +247,7 @@ public enum Structure {
         add(new Triple<>(Blocks.log, BlockPlanks.VARIANT, BlockPlanks.EnumType.OAK)); // 4
         add(new Triple<>(Blocks.oak_fence, null, null)); // 5
         add(new Triple<>(Blocks.torch, null, null)); // 6
-    }},StructureType.CH_MOB_SPOTS,LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.MITHRIL_DEPOSITS, "§bSmall Grunt Bridge",0,0,0),
+    }}, StructureType.CH_MOB_SPOTS, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.MITHRIL_DEPOSITS, "§bSmall Grunt Bridge", 0, 0, 0),
     KEY_GUARDIAN_SPIRAL(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
         add(new Triple<>(Blocks.jungle_stairs, null, null)); // 0
         add(new Triple<>(Blocks.planks, null, null)); // 1
@@ -239,7 +260,7 @@ public enum Structure {
         add(new Triple<>(Blocks.stone, null, null)); // 8
         add(new Triple<>(Blocks.stone, null, null)); // 9
         add(new Triple<>(Blocks.stone, null, null)); // 10
-    }},StructureType.CH_MOB_SPOTS,LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.JUNGLE, "§aKey Guardian Spiral",0,0,0),
+    }}, StructureType.CH_MOB_SPOTS, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.JUNGLE, "§aKey Guardian Spiral", 0, 0, 0),
     SLUDGE_WATERFALLS(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
         add(new Triple<>(Blocks.stone, null, null)); // 0
         add(new Triple<>(Blocks.dirt, null, null)); // 1
@@ -250,7 +271,7 @@ public enum Structure {
         add(new Triple<>(Blocks.air, null, null)); // 6
         add(new Triple<>(Blocks.air, null, null)); // 7
         add(new Triple<>(Blocks.air, null, null)); // 8
-    }},StructureType.CH_MOB_SPOTS,LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.JUNGLE, "§aSludge Waterfalls",0,0,0),
+    }}, StructureType.CH_MOB_SPOTS, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.JUNGLE, "§aSludge Waterfalls", 0, 0, 0),
     SLUDGE_BRIDGES(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
         add(new Triple<>(Blocks.planks, BlockPlanks.VARIANT, BlockPlanks.EnumType.JUNGLE)); // 0
         add(new Triple<>(Blocks.planks, BlockPlanks.VARIANT, BlockPlanks.EnumType.JUNGLE)); // 1
@@ -263,7 +284,7 @@ public enum Structure {
         add(new Triple<>(Blocks.planks, BlockPlanks.VARIANT, BlockPlanks.EnumType.JUNGLE)); // 8
         add(new Triple<>(Blocks.stone, BlockStone.VARIANT, BlockStone.EnumType.GRANITE)); // 9
         add(new Triple<>(Blocks.stone, BlockStone.VARIANT, BlockStone.EnumType.GRANITE)); // 10
-    }},StructureType.CH_MOB_SPOTS,LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.JUNGLE, "§aSludge Bridges",0,0,0),
+    }}, StructureType.CH_MOB_SPOTS, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.JUNGLE, "§aSludge Bridges", 0, 0, 0),
     YOG_BRIDGE(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
         add(new Triple<>(Blocks.stonebrick, null, null)); // 0
         add(new Triple<>(Blocks.stone_brick_stairs, null, null)); // 1
@@ -280,7 +301,7 @@ public enum Structure {
         add(new Triple<>(Blocks.stonebrick, null, null)); // 12
         add(new Triple<>(Blocks.stonebrick, null, null)); // 13
         add(new Triple<>(Blocks.rail, null, null)); // 14
-    }},StructureType.CH_MOB_SPOTS,LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.MAGMA_FIELDS, "§6Yog Bridge",0,15,0),
+    }}, StructureType.CH_MOB_SPOTS, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.MAGMA_FIELDS, "§6Yog Bridge", 0, 15, 0),
     ODAWA(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
         add(new Triple<>(Blocks.log, BlockPlanks.VARIANT, BlockPlanks.EnumType.JUNGLE)); // 0
         add(new Triple<>(Blocks.spruce_stairs, null, null)); // 1
@@ -293,7 +314,7 @@ public enum Structure {
         add(new Triple<>(Blocks.log, BlockPlanks.VARIANT, BlockPlanks.EnumType.JUNGLE)); // 8
         add(new Triple<>(Blocks.hay_block, null, null)); // 9
         add(new Triple<>(Blocks.stained_hardened_clay, BlockColored.COLOR, EnumDyeColor.YELLOW)); // 10
-    }},StructureType.CH_MOB_SPOTS,LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.JUNGLE, "§aOdawa",0,0,0),
+    }}, StructureType.CH_MOB_SPOTS, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.JUNGLE, "§aOdawa", 0, 0, 0),
     MINI_JUNGLE_TEMPLE(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
         add(new Triple<>(Blocks.stone, BlockStone.VARIANT, BlockStone.EnumType.ANDESITE_SMOOTH)); // 0
         add(new Triple<>(Blocks.stone, BlockStone.VARIANT, BlockStone.EnumType.ANDESITE)); // 1
@@ -309,7 +330,7 @@ public enum Structure {
         add(new Triple<>(Blocks.stone, BlockStone.VARIANT, BlockStone.EnumType.ANDESITE)); // 11
         add(new Triple<>(Blocks.stone, null, null)); // 12
         add(new Triple<>(Blocks.stone, BlockStone.VARIANT, BlockStone.EnumType.ANDESITE)); // 13
-    }},StructureType.CH_MOB_SPOTS,LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.JUNGLE, "§aMini Jungle Temple",0,0,0),
+    }}, StructureType.CH_MOB_SPOTS, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.JUNGLE, "§aMini Jungle Temple", 0, 0, 0),
     PRECURSOR_TRIPWIRE_CHAMBER(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
         add(new Triple<>(Blocks.stone, BlockStone.VARIANT, BlockStone.EnumType.DIORITE)); // 0
         add(new Triple<>(Blocks.stone, BlockStone.VARIANT, BlockStone.EnumType.DIORITE)); // 1
@@ -325,7 +346,7 @@ public enum Structure {
         add(new Triple<>(Blocks.double_stone_slab, null, null));
         add(new Triple<>(Blocks.double_stone_slab, null, null));
         add(new Triple<>(Blocks.double_stone_slab, null, null));
-    }},StructureType.CH_MOB_SPOTS,LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.PRECURSOR_REMNANTS, "§bPrecursor Tripwire Chamber",0,0,0),
+    }}, StructureType.CH_MOB_SPOTS, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.PRECURSOR_REMNANTS, "§bPrecursor Tripwire Chamber", 0, 0, 0),
     PRECURSOR_TALL_PILLARS(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
         add(new Triple<>(Blocks.stone, BlockStone.VARIANT, BlockStone.EnumType.DIORITE_SMOOTH)); // 0
         add(new Triple<>(Blocks.stone, BlockStone.VARIANT, BlockStone.EnumType.DIORITE_SMOOTH)); // 1
@@ -347,7 +368,7 @@ public enum Structure {
         add(new Triple<>(Blocks.stone, BlockStone.VARIANT, BlockStone.EnumType.DIORITE)); // 17
         add(new Triple<>(Blocks.stone, BlockStone.VARIANT, BlockStone.EnumType.DIORITE)); // 18
         add(new Triple<>(Blocks.stone, BlockStone.VARIANT, BlockStone.EnumType.DIORITE_SMOOTH)); // 19
-    }},StructureType.CH_MOB_SPOTS,LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.PRECURSOR_REMNANTS, "§bPrecursor Tall Pillars",0,0,0),
+    }}, StructureType.CH_MOB_SPOTS, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.PRECURSOR_REMNANTS, "§bPrecursor Tall Pillars", 0, 0, 0),
     GOBLIN_HOLE_CAMP(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
         add(new Triple<>(Blocks.netherrack, null, null)); // 0
         add(new Triple<>(Blocks.netherrack, null, null)); // 1
@@ -355,7 +376,7 @@ public enum Structure {
         add(new Triple<>(Blocks.oak_fence, null, null)); // 3
         add(new Triple<>(Blocks.log, BlockPlanks.VARIANT, BlockPlanks.EnumType.OAK)); // 4
         add(new Triple<>(Blocks.log, BlockPlanks.VARIANT, BlockPlanks.EnumType.OAK)); // 5
-    }},StructureType.CH_MOB_SPOTS,LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.GOBLIN_HOLDOUT, "§6Goblin Hole Camp",0,0,0),
+    }}, StructureType.CH_MOB_SPOTS, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.GOBLIN_HOLDOUT, "§6Goblin Hole Camp", 0, 0, 0),
 
     GOLDEN_DRAGON(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
         add(new Triple<>(Blocks.stone, null, null));
