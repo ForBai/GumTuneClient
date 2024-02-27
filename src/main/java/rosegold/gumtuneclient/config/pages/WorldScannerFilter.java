@@ -41,6 +41,19 @@ public class WorldScannerFilter {
             name = "Magma Fields Fairy Grottos"
     )
     public static boolean worldScannerCHMagmaFieldsFairyGrottos = false;
+    @Switch(
+            name = "Magma Fields Extra Fairy Grottos"
+    )
+    public static boolean worldScannerCHExtraMagmaFieldsFairyGrottos = false;
+
+    @Switch(
+            name = "Magma Fields Fairy Extra Grottos"
+    )
+    public static boolean worldScannerCHExtraFairyGrottos = false;
+    @Switch(
+            name = "Magma Fields Fairy Extra Grottos Beacon"
+    )
+    public static boolean worldScannerCHExtraFairyGrottosBeacon = false;
 
     @Switch(
             name = "Fairy Grottos Beacon"
