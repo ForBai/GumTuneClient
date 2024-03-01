@@ -45,10 +45,10 @@ public class WorldScanner {
         private final String serverName;
 
         public World(String serverName) {
-            this.extraFairyGrottosWaypoints = new ConcurrentHashMap<>();
             this.crystalWaypoints = new ConcurrentHashMap<>();
             this.mobSpotWaypoints = new ConcurrentHashMap<>();
             this.fairyGrottosWaypoints = new ConcurrentHashMap<>();
+            this.extraFairyGrottosWaypoints = new ConcurrentHashMap<>();
             this.wormFishingWaypoints = new ConcurrentHashMap<>();
             this.dragonNestWaypoints = new ConcurrentHashMap<>();
             this.chunkCache = new HashSet<>();
@@ -69,6 +69,14 @@ public class WorldScanner {
 
         public ConcurrentHashMap<String, BlockPos> getMobSpotWaypoints() {
             return mobSpotWaypoints;
+        }
+
+        public void updateExtraFairyGrottosWaypoints(String name, BlockPos blockPos) {
+            this.extraFairyGrottosWaypoints.put(name, blockPos);
+        }
+
+        public ConcurrentHashMap<String, BlockPos> getExtraFairyGrottosWaypoints() {
+            return extraFairyGrottosWaypoints;
         }
 
         public void updateFairyGrottos(BlockPos blockPos) {
@@ -149,7 +157,7 @@ public class WorldScanner {
             cooldown--;
         }
         if (cooldown == 1 && !worlds.containsKey(LocationUtils.serverName)) {
-            worlds.put(LocationUtils.serverName, new World(, LocationUtils.serverName));
+            worlds.put(LocationUtils.serverName, new World(LocationUtils.serverName));
         }
         if (cooldown == 0) {
             if (initialScan) return;
@@ -204,7 +212,7 @@ public class WorldScanner {
         }
         if (WorldScannerFilter.worldScannerCHFairyGrottos) {
             for (BlockPos blockPos : currentWorld.getFairyGrottos().keySet()) {
-                if (WorldScannerFilter.worldScannerCHMagmaFieldsFairyGrottos && blockPos.getY() < 64) {
+                if (WorldScannerFilter.worldScannerCHMagmaFieldsFairyGrottos && blockPos.getY() <= 64) {
                     RenderUtils.renderEspBox(blockPos, event.partialTicks, Color.YELLOW.getRGB());
                     RenderUtils.renderWaypointText("§eMagma Fields §dFairy Grotto", blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5, event.partialTicks);
                 } else {
@@ -216,13 +224,14 @@ public class WorldScanner {
             }
         }
         if (WorldScannerFilter.worldScannerCHExtraFairyGrottos) {
-            for (BlockPos blockPos : currentWorld.getFairyGrottos().keySet()) {
+            for (Map.Entry<String, BlockPos> entry : currentWorld.getExtraFairyGrottosWaypoints().entrySet()) {
+                BlockPos blockPos = entry.getValue();
                 if (WorldScannerFilter.worldScannerCHExtraMagmaFieldsFairyGrottos && blockPos.getY() < 64) {
                     RenderUtils.renderEspBox(blockPos, event.partialTicks, Color.YELLOW.getRGB());
-                    RenderUtils.renderWaypointText("§eMagma Fields §dFairy Grotto", blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5, event.partialTicks);
+                    RenderUtils.renderWaypointText("§eMagma Fields §d" + entry.getKey() + "Fairy Grotto", blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5, event.partialTicks);
                 } else {
                     RenderUtils.renderEspBox(blockPos, event.partialTicks, Color.PINK.getRGB());
-                    RenderUtils.renderWaypointText("§d"+entry.+"Fairy Grotto", blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5, event.partialTicks);
+                    RenderUtils.renderWaypointText("§d" + entry.getKey() + "Fairy Grotto", blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5, event.partialTicks);
                 }
                 if (WorldScannerFilter.worldScannerCHExtraFairyGrottosBeacon)
                     RenderUtils.renderBeacon(blockPos, Color.PINK, event.partialTicks);
@@ -303,6 +312,19 @@ public class WorldScanner {
                                 } else if (WorldScannerFilter.worldScannerCHMagmaFieldsFairyGrottos && y < 64) {
                                     if (scanStructure(chunk, structure, x, y, z)) {
                                         currentWorld.updateFairyGrottos(new BlockPos(chunk.xPosition * 16 + x, y, chunk.zPosition * 16 + z));
+                                        return;
+                                    }
+                                }
+                            }
+                            if (structure.getStructureType().equals(StructureType.FAIRY_GROTTO_EXTRA)) {
+                                if (WorldScannerFilter.worldScannerCHExtraFairyGrottos) {
+                                    if (scanStructure(chunk, structure, x, y, z)) {
+                                        currentWorld.updateExtraFairyGrottosWaypoints(structure.getName(), new BlockPos(chunk.xPosition * 16 + x, y, chunk.zPosition * 16 + z));
+                                        return;
+                                    }
+                                } else if (WorldScannerFilter.worldScannerCHExtraMagmaFieldsFairyGrottos && y < 64) {
+                                    if (scanStructure(chunk, structure, x, y, z)) {
+                                        currentWorld.updateExtraFairyGrottosWaypoints(structure.getName(), new BlockPos(chunk.xPosition * 16 + x, y, chunk.zPosition * 16 + z));
                                         return;
                                     }
                                 }
