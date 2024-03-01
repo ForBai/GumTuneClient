@@ -262,12 +262,12 @@ public class VisitorHelpers {
     }
 
     private void clickSlot(int slot, int windowAdd) {
-        GumTuneClient.mc.playerController.windowClick(
-                GumTuneClient.mc.thePlayer.openContainer.windowId + windowAdd,
-                slot,
-                0,
-                0,
-                GumTuneClient.mc.thePlayer
-        );
+//        GumTuneClient.mc.playerController.windowClick(
+//                GumTuneClient.mc.thePlayer.openContainer.windowId + windowAdd,
+//                slot,
+//                0,
+//                0,
+//                GumTuneClient.mc.thePlayer
+//        );
     }
 }
