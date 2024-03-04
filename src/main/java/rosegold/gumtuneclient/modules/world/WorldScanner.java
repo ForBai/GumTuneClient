@@ -298,6 +298,7 @@ public class WorldScanner {
 
                             if (structure.getStructureType().equals(StructureType.CH_MOB_SPOTS) && WorldScannerFilter.worldScannerCHMobSpots) {
                                 if (scanStructure(chunk, structure, x, y, z)) {
+                                    sendCoordinatesMessage(structure.getName(), chunk.xPosition * 16 + x + structure.getXOffset(), y + structure.getYOffset(), chunk.zPosition * 16 + z + structure.getZOffset());
                                     currentWorld.updateMobSpotWaypoints(structure.getName(), new BlockPos(chunk.xPosition * 16 + x + structure.getXOffset(), y + structure.getYOffset(), chunk.zPosition * 16 + z + structure.getZOffset()));
                                     return;
                                 }
@@ -306,11 +307,13 @@ public class WorldScanner {
                             if (structure.getStructureType().equals(StructureType.FAIRY_GROTTO)) {
                                 if (WorldScannerFilter.worldScannerCHFairyGrottos) {
                                     if (scanStructure(chunk, structure, x, y, z)) {
+                                        sendCoordinatesMessage(structure.getName(), chunk.xPosition * 16 + x + structure.getXOffset(), y + structure.getYOffset(), chunk.zPosition * 16 + z + structure.getZOffset());
                                         currentWorld.updateFairyGrottos(new BlockPos(chunk.xPosition * 16 + x, y, chunk.zPosition * 16 + z));
                                         return;
                                     }
                                 } else if (WorldScannerFilter.worldScannerCHMagmaFieldsFairyGrottos && y < 64) {
                                     if (scanStructure(chunk, structure, x, y, z)) {
+                                        sendCoordinatesMessage(structure.getName(), chunk.xPosition * 16 + x + structure.getXOffset(), y + structure.getYOffset(), chunk.zPosition * 16 + z + structure.getZOffset());
                                         currentWorld.updateFairyGrottos(new BlockPos(chunk.xPosition * 16 + x, y, chunk.zPosition * 16 + z));
                                         return;
                                     }
@@ -319,11 +322,13 @@ public class WorldScanner {
                             if (structure.getStructureType().equals(StructureType.FAIRY_GROTTO_EXTRA)) {
                                 if (WorldScannerFilter.worldScannerCHExtraFairyGrottos) {
                                     if (scanStructure(chunk, structure, x, y, z)) {
+                                        sendCoordinatesMessage(structure.getName(), chunk.xPosition * 16 + x + structure.getXOffset(), y + structure.getYOffset(), chunk.zPosition * 16 + z + structure.getZOffset());
                                         currentWorld.updateExtraFairyGrottosWaypoints(structure.getName(), new BlockPos(chunk.xPosition * 16 + x, y, chunk.zPosition * 16 + z));
                                         return;
                                     }
                                 } else if (WorldScannerFilter.worldScannerCHExtraMagmaFieldsFairyGrottos && y < 64) {
                                     if (scanStructure(chunk, structure, x, y, z)) {
+                                        sendCoordinatesMessage(structure.getName(), chunk.xPosition * 16 + x + structure.getXOffset(), y + structure.getYOffset(), chunk.zPosition * 16 + z + structure.getZOffset());
                                         currentWorld.updateExtraFairyGrottosWaypoints(structure.getName(), new BlockPos(chunk.xPosition * 16 + x, y, chunk.zPosition * 16 + z));
                                         return;
                                     }
@@ -435,7 +440,7 @@ public class WorldScanner {
 
     private static void addToSkytilsMap(String name, int x, int y, int z) {
         if (!GumTuneClientConfig.worldScannerAddWaypointToSkytilsMap) return;
-        ClientCommandHandler.instance.executeCommand(GumTuneClient.mc.thePlayer, "/sthw set " + x + " " + y + " " + z + " " + internalSkytilsNames.get(name));
+        ClientCommandHandler.instance.executeCommand(GumTuneClient.mc.thePlayer, "/sthw set " + x + " " + y + " " + z + " " + internalSkytilsNames.getOrDefault(name, name));
     }
 
 }
