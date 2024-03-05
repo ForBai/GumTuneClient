@@ -69,54 +69,50 @@ public enum Structure {
     }}, StructureType.FAIRY_GROTTO, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.ANY, "", 0, 0, 0),
 
     FAIRY_GROTTO_SHRINE(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
-        add(new Triple<>(Blocks.stained_glass, BlockColored.COLOR, EnumDyeColor.PINK));
-        add(new Triple<>(Blocks.stone, null, null));
-        add(new Triple<>(Blocks.water, null, null));
-        add(new Triple<>(Blocks.water, null, null));
-        add(new Triple<>(Blocks.water, null, null));
         add(new Triple<>(Blocks.clay, null, null));
-        Collections.reverse(this);
+        add(new Triple<>(Blocks.water, null, null));
+        add(new Triple<>(Blocks.water, null, null));
+        add(new Triple<>(Blocks.water, null, null));
+        add(new Triple<>(Blocks.stone, null, null));
+        add(new Triple<>(Blocks.stained_glass, BlockColored.COLOR, EnumDyeColor.PINK));
     }}, StructureType.FAIRY_GROTTO_EXTRA, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.ANY, "Shrine ↓", 0, 0, 0),
 
     FAIRY_GROTTO_WATERFALLS(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
-        add(new Triple<>(Blocks.stonebrick, null, null));
-        add(new Triple<>(Blocks.stone_brick_stairs, null, null));
+        add(new Triple<>(Blocks.cobblestone_wall, null, null));
         add(new Triple<>(Blocks.cobblestone_wall, BlockWall.VARIANT, BlockWall.EnumType.MOSSY));
-        add(new Triple<>(Blocks.cobblestone_wall, null, null));
-        add(new Triple<>(Blocks.cobblestone_wall, null, null));
-        add(new Triple<>(Blocks.cobblestone_wall, null, null));
         add(new Triple<>(Blocks.air, null, null));
-        add(new Triple<>(Blocks.cobblestone_wall, BlockWall.VARIANT, BlockWall.EnumType.MOSSY));
         add(new Triple<>(Blocks.cobblestone_wall, null, null));
-        Collections.reverse(this);
+        add(new Triple<>(Blocks.cobblestone_wall, null, null));
+        add(new Triple<>(Blocks.cobblestone_wall, null, null));
+        add(new Triple<>(Blocks.cobblestone_wall, BlockWall.VARIANT, BlockWall.EnumType.MOSSY));
+        add(new Triple<>(Blocks.stone_brick_stairs, null, null));
+        add(new Triple<>(Blocks.stonebrick, null, null));
     }}, StructureType.FAIRY_GROTTO_EXTRA, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.ANY, "Waterfalls ↓", 0, 0, 0),
 
     FAIRY_GROTTO_PALACE(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
-        add(new Triple<>(Blocks.mossy_cobblestone, null, null));
+        add(new Triple<>(Blocks.stone, BlockStone.VARIANT, BlockStone.EnumType.ANDESITE));
+        add(new Triple<>(null, null, null));
+        add(new Triple<>(null, null, null));
+        add(new Triple<>(null, null, null));
+        add(new Triple<>(Blocks.stone, BlockStone.VARIANT, BlockStone.EnumType.ANDESITE));
         add(new Triple<>(Blocks.stone, BlockStone.VARIANT, BlockStone.EnumType.ANDESITE_SMOOTH));
-        add(new Triple<>(Blocks.stone, BlockStone.VARIANT, BlockStone.EnumType.ANDESITE));
-        add(new Triple<>(null, null, null));
-        add(new Triple<>(null, null, null));
-        add(new Triple<>(null, null, null));
-        add(new Triple<>(Blocks.stone, BlockStone.VARIANT, BlockStone.EnumType.ANDESITE));
-        Collections.reverse(this);
+        add(new Triple<>(Blocks.mossy_cobblestone, null, null));
     }}, StructureType.FAIRY_GROTTO_EXTRA, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.ANY, "Palace", 0, 0, 0),
 
     FAIRY_GROTTO_MANSION(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
+        add(new Triple<>(Blocks.grass, null, null));
+        add(new Triple<>(Blocks.grass, null, null));
+        add(new Triple<>(Blocks.grass, null, null));
+        add(new Triple<>(null, null, null));
         add(new Triple<>(Blocks.stonebrick, null, null));
-        add(new Triple<>(Blocks.torch, null, null));
-        add(new Triple<>(Blocks.cobblestone_wall, null, null));
+        add(new Triple<>(null, null, null));
+        add(new Triple<>(null, null, null));
+        add(new Triple<>(null, null, null));
+        add(new Triple<>(Blocks.stonebrick, null, null));
         add(new Triple<>(Blocks.stonebrick, BlockStoneBrick.VARIANT, BlockStoneBrick.EnumType.MOSSY));
+        add(new Triple<>(Blocks.cobblestone_wall, null, null));
+        add(new Triple<>(Blocks.torch, null, null));
         add(new Triple<>(Blocks.stonebrick, null, null));
-        add(new Triple<>(null, null, null));
-        add(new Triple<>(null, null, null));
-        add(new Triple<>(null, null, null));
-        add(new Triple<>(Blocks.stonebrick, null, null));
-        add(new Triple<>(null, null, null));
-        add(new Triple<>(Blocks.grass, null, null));
-        add(new Triple<>(Blocks.grass, null, null));
-        add(new Triple<>(Blocks.grass, null, null));
-        Collections.reverse(this);
     }}, StructureType.FAIRY_GROTTO_EXTRA, LocationUtils.Island.CRYSTAL_HOLLOWS, CrystalHollowsQuarter.ANY, "Mansion", 0, 0, 0),
 
     GOBLIN_HALL(new ArrayList<Triple<Block, PropertyEnum, Comparable>>() {{
