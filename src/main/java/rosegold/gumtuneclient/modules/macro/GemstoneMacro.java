@@ -350,79 +350,79 @@ public class GemstoneMacro {
                 }
                 break;
             case SETUP_ROTATE_TO_BLOCK:
-                current = BlockUtils.getEasiestBlock(5, 5, 4, this::canMine);
-
-                if (current != null && !GumTuneClientConfig.aotvGemstoneMacroMineBlocksBehindWalls) {
-                    MovingObjectPosition movingObjectPosition = BlockUtils.rayTraceBlocks(
-                            GumTuneClient.mc.thePlayer.getPositionEyes(1.0f),
-                            new Vec3(current.getX() + 0.5, current.getY() + 0.5, current.getZ() + 0.5),
-                            false,
-                            true,
-                            false,
-                            blockPos -> blockPos.getX() == Math.floor(GumTuneClient.mc.thePlayer.posX) && blockPos.getZ() == Math.floor(GumTuneClient.mc.thePlayer.posZ) && blockPos.getY() < Math.floor(GumTuneClient.mc.thePlayer.posY)
-                    );
-
-                    if (movingObjectPosition != null && movingObjectPosition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-                        current = movingObjectPosition.getBlockPos();
-                    }
-                }
-
-                currentProgress = 0;
-
-                if (current != null) {
-                    if (equipPickaxe()) {
-
-                        RotationUtils.smoothLook(RotationUtils.getRotation(current), GumTuneClientConfig.aotvGemstoneMacroRotationSpeed);
-                        gemMacroState = GumTuneClientConfig.aotvGemstoneMacroMiningMode == 1 ? GemMacroState.MINING : GemMacroState.ROTATE_TO_BLOCK;
-                    }
-                } else {
-                    gemMacroState = GemMacroState.AOTV_SETUP;
-                    currentIndex = activeList.getNextIndex(currentIndex);
-                }
-
-                timestamp = System.currentTimeMillis();
+//                current = BlockUtils.getEasiestBlock(5, 5, 4, this::canMine);
+//
+//                if (current != null && !GumTuneClientConfig.aotvGemstoneMacroMineBlocksBehindWalls) {
+//                    MovingObjectPosition movingObjectPosition = BlockUtils.rayTraceBlocks(
+//                            GumTuneClient.mc.thePlayer.getPositionEyes(1.0f),
+//                            new Vec3(current.getX() + 0.5, current.getY() + 0.5, current.getZ() + 0.5),
+//                            false,
+//                            true,
+//                            false,
+//                            blockPos -> blockPos.getX() == Math.floor(GumTuneClient.mc.thePlayer.posX) && blockPos.getZ() == Math.floor(GumTuneClient.mc.thePlayer.posZ) && blockPos.getY() < Math.floor(GumTuneClient.mc.thePlayer.posY)
+//                    );
+//
+//                    if (movingObjectPosition != null && movingObjectPosition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+//                        current = movingObjectPosition.getBlockPos();
+//                    }
+//                }
+//
+//                currentProgress = 0;
+//
+//                if (current != null) {
+//                    if (equipPickaxe()) {
+//
+//                        RotationUtils.smoothLook(RotationUtils.getRotation(current), GumTuneClientConfig.aotvGemstoneMacroRotationSpeed);
+//                        gemMacroState = GumTuneClientConfig.aotvGemstoneMacroMiningMode == 1 ? GemMacroState.MINING : GemMacroState.ROTATE_TO_BLOCK;
+//                    }
+//                } else {
+//                    gemMacroState = GemMacroState.AOTV_SETUP;
+//                    currentIndex = activeList.getNextIndex(currentIndex);
+//                }
+//
+//                timestamp = System.currentTimeMillis();
                 break;
             case ROTATE_TO_BLOCK:
-                if (System.currentTimeMillis() - timestamp > GumTuneClientConfig.aotvGemstoneMacroRotationSpeed) {
-                    gemMacroState = GemMacroState.MINING;
-                    timestamp = System.currentTimeMillis();
-                }
+//                if (System.currentTimeMillis() - timestamp > GumTuneClientConfig.aotvGemstoneMacroRotationSpeed) {
+//                    gemMacroState = GemMacroState.MINING;
+//                    timestamp = System.currentTimeMillis();
+//                }
                 break;
             case MINING:
-                if (current != null) {
-                    if (mining && PlayerUtils.pickaxeAbilityReady) {
-                        GumTuneClient.mc.playerController.sendUseItem(
-                                GumTuneClient.mc.thePlayer,
-                                GumTuneClient.mc.theWorld,
-                                GumTuneClient.mc.thePlayer.getHeldItem()
-                        );
-                    }
-
-                    if (!mining) {
-                        breakBlock(current);
-                        mining = true;
-                    }
-
-                    if (System.currentTimeMillis() - timestamp > 3000) {
-                        ModUtils.sendMessage("Stuck mining block, it's bad!");
-                        current = null;
-                        currentProgress = 0;
-                        mining = false;
-                        gemMacroState = GemMacroState.SETUP_ROTATE_TO_BLOCK;
-                        timestamp = System.currentTimeMillis();
-                        break;
-                    }
-
-                    GumTuneClient.mc.thePlayer.swingItem();
-
-                    if ((currentProgress != 10 && currentProgress >= GumTuneClientConfig.aotvGemstoneMacroBlockBreakProgress) || getBlockState(current).getBlock() == Blocks.air) {
-                        broken.put(current);
-                        current = null;
-                        currentProgress = 0;
-                        mining = false;
-                        gemMacroState = GemMacroState.SETUP_ROTATE_TO_BLOCK;
-                    }
-                }
+//                if (current != null) {
+//                    if (mining && PlayerUtils.pickaxeAbilityReady) {
+//                        GumTuneClient.mc.playerController.sendUseItem(
+//                                GumTuneClient.mc.thePlayer,
+//                                GumTuneClient.mc.theWorld,
+//                                GumTuneClient.mc.thePlayer.getHeldItem()
+//                        );
+//                    }
+//
+//                    if (!mining) {
+//                        breakBlock(current);
+//                        mining = true;
+//                    }
+//
+//                    if (System.currentTimeMillis() - timestamp > 3000) {
+//                        ModUtils.sendMessage("Stuck mining block, it's bad!");
+//                        current = null;
+//                        currentProgress = 0;
+//                        mining = false;
+//                        gemMacroState = GemMacroState.SETUP_ROTATE_TO_BLOCK;
+//                        timestamp = System.currentTimeMillis();
+//                        break;
+//                    }
+//
+//                    GumTuneClient.mc.thePlayer.swingItem();
+//
+//                    if ((currentProgress != 10 && currentProgress >= GumTuneClientConfig.aotvGemstoneMacroBlockBreakProgress) || getBlockState(current).getBlock() == Blocks.air) {
+//                        broken.put(current);
+//                        current = null;
+//                        currentProgress = 0;
+//                        mining = false;
+//                        gemMacroState = GemMacroState.SETUP_ROTATE_TO_BLOCK;
+//                    }
+//                }
                 break;
             case SPAWN_ARMADILLO:
                 if (rodSlot != -1) {

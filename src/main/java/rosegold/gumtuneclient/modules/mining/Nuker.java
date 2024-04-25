@@ -95,14 +95,15 @@ public class Nuker {
         if (!isEnabled()) return;
 
         blocksInRange.clear();
-        EntityPlayerSP player =  GumTuneClient.mc.thePlayer;
+        EntityPlayerSP player = GumTuneClient.mc.thePlayer;
         BlockPos playerPos = new BlockPos((int) Math.floor(player.posX), (int) Math.floor(player.posY) + 1, (int) Math.floor(player.posZ));
         Vec3i vec3Top = new Vec3i(NukerSliderOptions.nukerRange, NukerSliderOptions.nukerHeight, NukerSliderOptions.nukerRange);
         Vec3i vec3Bottom = new Vec3i(NukerSliderOptions.nukerRange, NukerSliderOptions.nukerDepth, NukerSliderOptions.nukerRange);
 
         for (BlockPos blockPos : BlockPos.getAllInBox(playerPos.subtract(vec3Bottom), playerPos.add(vec3Top))) {
             Vec3 target = new Vec3(blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5);
-            if (Math.abs(RotationUtils.wrapAngleTo180(RotationUtils.fovToVec3(target) - RotationUtils.wrapAngleTo180(GumTuneClient.mc.thePlayer.rotationYaw))) < (float) NukerSliderOptions.nukerFieldOfView / 2) blocksInRange.add(blockPos);
+            if (Math.abs(RotationUtils.wrapAngleTo180(RotationUtils.fovToVec3(target) - RotationUtils.wrapAngleTo180(GumTuneClient.mc.thePlayer.rotationYaw))) < (float) NukerSliderOptions.nukerFieldOfView / 2)
+                blocksInRange.add(blockPos);
         }
 
         if (System.currentTimeMillis() - stuckTimestamp > NukerSliderOptions.nukerStuckTimer) {
@@ -192,7 +193,8 @@ public class Nuker {
         if (!isEnabled()) return;
         RenderUtils.renderEspBox(blockPos, event.partialTicks, Color.GRAY.getRGB());
         RenderUtils.renderEspBox(current, event.partialTicks, Color.BLUE.getRGB());
-        if (NukerBooleanOptions.preview) blocksInRange.forEach(bp -> RenderUtils.renderEspBox(bp, event.partialTicks, Color.CYAN.getRGB(), 0.1f));
+        if (NukerBooleanOptions.preview)
+            blocksInRange.forEach(bp -> RenderUtils.renderEspBox(bp, event.partialTicks, Color.CYAN.getRGB(), 0.1f));
     }
 
     @SubscribeEvent(priority = EventPriority.NORMAL)
@@ -356,20 +358,151 @@ public class Nuker {
                 NukerBlockFilter.nukerBlockFilterHardstone &&
                 (block == Blocks.stone || block == Blocks.stained_hardened_clay)) return true;
 
-        if (LocationUtils.currentIsland == LocationUtils.Island.CRYSTAL_HOLLOWS &&
-                NukerBlockFilter.nukerBlockFilterGemstones &&
-                (block == Blocks.stained_glass_pane ||
-                block == Blocks.stained_glass)) return true;
+        if (
+                (LocationUtils.currentIsland == LocationUtils.Island.CRYSTAL_HOLLOWS ||
+                        LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES ||
+                        LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT) &&
+                        NukerBlockFilter.nukerBlockFilterGemstones &&
+                        (block == Blocks.stained_glass_pane ||
+                                block == Blocks.stained_glass)
+        ) return true;
+
+        if (
+                (LocationUtils.currentIsland == LocationUtils.Island.CRYSTAL_HOLLOWS ||
+                        LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES ||
+                        LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT) &&
+                        NukerBlockFilter.nukerBlockFilterJade &&
+                        ((block == Blocks.stained_glass_pane && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.LIME) ||
+                                (block == Blocks.stained_glass && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.LIME))
+        ) return true;
+        if (
+                (LocationUtils.currentIsland == LocationUtils.Island.CRYSTAL_HOLLOWS ||
+                        LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES ||
+                        LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT) &&
+                        NukerBlockFilter.nukerBlockFilterAmber &&
+                        ((block == Blocks.stained_glass_pane && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.ORANGE) ||
+                                (block == Blocks.stained_glass && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.ORANGE))
+        ) return true;
+        if (
+                (LocationUtils.currentIsland == LocationUtils.Island.CRYSTAL_HOLLOWS ||
+                        LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES ||
+                        LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT) &&
+                        NukerBlockFilter.nukerBlockFilterTopaz &&
+                        ((block == Blocks.stained_glass_pane && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.YELLOW) ||
+                                (block == Blocks.stained_glass && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.YELLOW))
+        ) return true;
+        if (
+                (LocationUtils.currentIsland == LocationUtils.Island.CRYSTAL_HOLLOWS ||
+                        LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES ||
+                        LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT) &&
+                        NukerBlockFilter.nukerBlockFilterSapphire &&
+                        ((block == Blocks.stained_glass_pane && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.LIGHT_BLUE) ||
+                                (block == Blocks.stained_glass && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.LIGHT_BLUE))
+        ) return true;
+        if (
+                (LocationUtils.currentIsland == LocationUtils.Island.CRYSTAL_HOLLOWS ||
+                        LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES ||
+                        LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT) &&
+                        NukerBlockFilter.nukerBlockFilterAmethyst &&
+                        ((block == Blocks.stained_glass_pane && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.PURPLE) ||
+                                (block == Blocks.stained_glass && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.PURPLE))
+        ) return true;
+        if (
+                (LocationUtils.currentIsland == LocationUtils.Island.CRYSTAL_HOLLOWS ||
+                        LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES ||
+                        LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT) &&
+                        NukerBlockFilter.nukerBlockFilterJasper &&
+                        ((block == Blocks.stained_glass_pane && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.PINK) ||
+                                (block == Blocks.stained_glass && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.PINK))
+        ) return true;
+        if (
+                (LocationUtils.currentIsland == LocationUtils.Island.CRYSTAL_HOLLOWS ||
+                        LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES ||
+                        LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT) &&
+                        NukerBlockFilter.nukerBlockFilterRuby &&
+                        ((block == Blocks.stained_glass_pane && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.RED) ||
+                                (block == Blocks.stained_glass && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.RED))
+        ) return true;
+        if (
+                (LocationUtils.currentIsland == LocationUtils.Island.CRYSTAL_HOLLOWS ||
+                        LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES ||
+                        LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT) &&
+                        NukerBlockFilter.nukerBlockFilterOpal &&
+                        ((block == Blocks.stained_glass_pane && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.WHITE) ||
+                                (block == Blocks.stained_glass && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.WHITE))
+        ) return true;
+        if (
+                (LocationUtils.currentIsland == LocationUtils.Island.CRYSTAL_HOLLOWS ||
+                        LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES ||
+                        LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT) &&
+                        NukerBlockFilter.nukerBlockFilterOnyx &&
+                        ((block == Blocks.stained_glass_pane && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.BLACK) ||
+                                (block == Blocks.stained_glass && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.BLACK))
+        ) return true;
+        if (
+                (LocationUtils.currentIsland == LocationUtils.Island.CRYSTAL_HOLLOWS ||
+                        LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES ||
+                        LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT) &&
+                        NukerBlockFilter.nukerBlockFilterAquamarine &&
+                        ((block == Blocks.stained_glass_pane && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.BLUE) ||
+                                (block == Blocks.stained_glass && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.BLUE))
+        ) return true;
+        if (
+                (LocationUtils.currentIsland == LocationUtils.Island.CRYSTAL_HOLLOWS ||
+                        LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES ||
+                        LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT) &&
+                        NukerBlockFilter.nukerBlockFilterCitrine &&
+                        ((block == Blocks.stained_glass_pane && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.BROWN) ||
+                                (block == Blocks.stained_glass && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.BROWN))
+
+        ) return true;
+        if (
+                (LocationUtils.currentIsland == LocationUtils.Island.CRYSTAL_HOLLOWS ||
+                        LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES ||
+                        LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT) &&
+                        NukerBlockFilter.nukerBlockFilterPeridot &&
+                        ((block == Blocks.stained_glass_pane && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.GREEN) ||
+                                (block == Blocks.stained_glass && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.GREEN))
+
+        ) return true;
+
+        if (
+                (LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES || LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT) &&
+                        NukerBlockFilter.nukerBlockFilterUmber &&
+                        (
+                                (block == Blocks.double_stone_slab2 && blockState.getValue(BlockStoneSlabNew.VARIANT) == BlockStoneSlabNew.EnumType.RED_SANDSTONE) ||
+                                        block == Blocks.hardened_clay ||
+                                        (block == Blocks.stained_hardened_clay && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.BROWN)
+                        )
+        ) return true;
+
+        if (
+                (LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES || LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT) &&
+                        NukerBlockFilter.nukerBlockFilterTungsten &&
+                        (
+                                block == Blocks.cobblestone ||
+                                        block == Blocks.clay
+                        )
+        ) return true;
+
+        if (
+                (LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES || LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT) &&
+                        NukerBlockFilter.nukerBlockFilterGlacite &&
+                        block == Blocks.packed_ice
+
+        ) return true;
+
 
         if (NukerBlockFilter.nukerBlockFilterMithril &&
                 (
                         (LocationUtils.currentIsland == LocationUtils.Island.CRYSTAL_HOLLOWS &&
                                 (block == Blocks.prismarine ||
-                                (block == Blocks.wool && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.LIGHT_BLUE))
+                                        (block == Blocks.wool && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.LIGHT_BLUE))
                         ) || (LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES &&
                                 (block == Blocks.prismarine ||
-                                block == Blocks.wool ||
-                                block == Blocks.stained_hardened_clay)
+                                        block == Blocks.wool ||
+                                        (block == Blocks.stained_hardened_clay && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.CYAN)
+                                )
                         )
                 )
         ) return true;
@@ -381,62 +514,62 @@ public class Nuker {
         if (LocationUtils.currentIsland == LocationUtils.Island.CRIMSON_ISLE &&
                 NukerBlockFilter.nukerBlockFilterExcavatables &&
                 (block == Blocks.sand ||
-                block == Blocks.mycelium)) return true;
+                        block == Blocks.mycelium)) return true;
 
         if (NukerBlockFilter.nukerBlockFilterGold &&
                 block == Blocks.gold_block) return true;
 
         if (NukerBlockFilter.nukerBlockFilterStone &&
                 (block == Blocks.stone ||
-                block == Blocks.cobblestone)) return true;
+                        block == Blocks.cobblestone)) return true;
 
         if (NukerBlockFilter.nukerBlockFilterOres &&
                 (block == Blocks.coal_ore ||
-                block == Blocks.lapis_ore ||
-                block == Blocks.iron_ore ||
-                block == Blocks.gold_ore ||
-                block == Blocks.redstone_ore ||
-                block == Blocks.lit_redstone_ore ||
-                block == Blocks.diamond_ore ||
-                block == Blocks.emerald_ore ||
-                block == Blocks.quartz_ore)) return true;
+                        block == Blocks.lapis_ore ||
+                        block == Blocks.iron_ore ||
+                        block == Blocks.gold_ore ||
+                        block == Blocks.redstone_ore ||
+                        block == Blocks.lit_redstone_ore ||
+                        block == Blocks.diamond_ore ||
+                        block == Blocks.emerald_ore ||
+                        block == Blocks.quartz_ore)) return true;
 
         if (NukerBlockFilter.nukerBlockFilterObsidian &&
                 block == Blocks.obsidian) return true;
 
         if (NukerBlockFilter.nukerBlockFilterCrops &&
                 ((block == Blocks.carrots && blockState.getValue(BlockCrops.AGE) == 7) ||
-                (block == Blocks.potatoes && blockState.getValue(BlockCrops.AGE) == 7) ||
-                (block == Blocks.reeds && getBlockState(bp.add(0, -1, 0)).getBlock() == Blocks.reeds && getBlockState(bp.add(0, 1, 0)).getBlock() == Blocks.reeds) ||
-                (block == Blocks.cocoa && blockState.getValue(BlockCocoa.AGE) == 2) ||
-                block == Blocks.melon_block ||
-                block == Blocks.pumpkin ||
-                (block == Blocks.cactus && getBlockState(bp.add(0, -1, 0)).getBlock() == Blocks.cactus) ||
-                block == Blocks.brown_mushroom ||
-                block == Blocks.red_mushroom  ||
-                (block == Blocks.nether_wart && blockState.getValue(BlockNetherWart.AGE) == 3) ||
-                (block == Blocks.wheat && blockState.getValue(BlockCrops.AGE) == 7))) return true;
+                        (block == Blocks.potatoes && blockState.getValue(BlockCrops.AGE) == 7) ||
+                        (block == Blocks.reeds && getBlockState(bp.add(0, -1, 0)).getBlock() == Blocks.reeds && getBlockState(bp.add(0, 1, 0)).getBlock() == Blocks.reeds) ||
+                        (block == Blocks.cocoa && blockState.getValue(BlockCocoa.AGE) == 2) ||
+                        block == Blocks.melon_block ||
+                        block == Blocks.pumpkin ||
+                        (block == Blocks.cactus && getBlockState(bp.add(0, -1, 0)).getBlock() == Blocks.cactus) ||
+                        block == Blocks.brown_mushroom ||
+                        block == Blocks.red_mushroom ||
+                        (block == Blocks.nether_wart && blockState.getValue(BlockNetherWart.AGE) == 3) ||
+                        (block == Blocks.wheat && blockState.getValue(BlockCrops.AGE) == 7))) return true;
 
         if (NukerBlockFilter.nukerBlockFilterFoliage &&
                 (block == Blocks.leaves ||
-                block == Blocks.leaves2 ||
-                block == Blocks.tallgrass ||
-                block == Blocks.red_flower ||
-                block == Blocks.yellow_flower ||
-                block == Blocks.double_plant ||
-                block == Blocks.deadbush)) return true;
+                        block == Blocks.leaves2 ||
+                        block == Blocks.tallgrass ||
+                        block == Blocks.red_flower ||
+                        block == Blocks.yellow_flower ||
+                        block == Blocks.double_plant ||
+                        block == Blocks.deadbush)) return true;
 
         if (NukerBlockFilter.nukerBlockFilterWood &&
                 (block == Blocks.log ||
-                block == Blocks.log2)) return true;
+                        block == Blocks.log2)) return true;
 
         if (NukerBlockFilter.nukerBlockFilterSand &&
                 (block == Blocks.sand || block == Blocks.gravel)) return true;
 
         if (NukerBlockFilter.nukerBlockFilterDirt &&
                 (block == Blocks.dirt ||
-                block == Blocks.grass ||
-                block == Blocks.farmland)) return true;
+                        block == Blocks.grass ||
+                        block == Blocks.farmland)) return true;
 
         if (NukerBlockFilter.nukerBlockFilterGlowstone &&
                 block == Blocks.glowstone) return true;
