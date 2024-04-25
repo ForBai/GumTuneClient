@@ -469,20 +469,15 @@ public class Nuker {
         if (
                 (LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES || LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT) &&
                         NukerBlockFilter.nukerBlockFilterUmber &&
-                        (
-                                (block == Blocks.double_stone_slab2 && blockState.getValue(BlockStoneSlabNew.VARIANT) == BlockStoneSlabNew.EnumType.RED_SANDSTONE) ||
+                        ((block == Blocks.double_stone_slab2 && blockState.getValue(BlockStoneSlabNew.VARIANT) == BlockStoneSlabNew.EnumType.RED_SANDSTONE) ||
                                         block == Blocks.hardened_clay ||
-                                        (block == Blocks.stained_hardened_clay && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.BROWN)
-                        )
+                                        (block == Blocks.stained_hardened_clay && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.BROWN))
         ) return true;
 
         if (
                 (LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES || LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT) &&
                         NukerBlockFilter.nukerBlockFilterTungsten &&
-                        (
-                                block == Blocks.cobblestone ||
-                                        block == Blocks.clay
-                        )
+                        (block == Blocks.cobblestone || block == Blocks.clay)
         ) return true;
 
         if (
@@ -500,7 +495,8 @@ public class Nuker {
                                         (block == Blocks.wool && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.LIGHT_BLUE))
                         ) || (LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES &&
                                 (block == Blocks.prismarine ||
-                                        block == Blocks.wool ||
+                                        (block == Blocks.wool && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.LIGHT_BLUE) ||
+                                        (block == Blocks.wool && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.GRAY) ||
                                         (block == Blocks.stained_hardened_clay && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.CYAN)
                                 )
                         )
@@ -595,7 +591,12 @@ public class Nuker {
                 block == Blocks.gold_block || block == Blocks.stained_glass_pane || block == Blocks.stained_glass ||
                 block == Blocks.glowstone || block == Blocks.chest ||
                 (block == Blocks.stone && blockState.getValue(BlockStone.VARIANT) == BlockStone.EnumType.DIORITE_SMOOTH) ||
-                block == Blocks.obsidian || (LocationUtils.currentIsland == LocationUtils.Island.THE_RIFT && block == Blocks.lapis_ore);
+                block == Blocks.obsidian || (LocationUtils.currentIsland == LocationUtils.Island.THE_RIFT && block == Blocks.lapis_ore) ||
+                block == Blocks.packed_ice || block == Blocks.clay ||
+                ((LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT || LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES) && block == Blocks.double_stone_slab2 && blockState.getValue(BlockStoneSlabNew.VARIANT) == BlockStoneSlabNew.EnumType.RED_SANDSTONE) ||
+                ((LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT || LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES) && block == Blocks.hardened_clay) ||
+                ((LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES || LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT) && NukerBlockFilter.nukerBlockFilterTungsten && block == Blocks.cobblestone) ||
+                (LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT && block == Blocks.cobblestone);
     }
 
     private IBlockState getBlockState(BlockPos blockPos) {
