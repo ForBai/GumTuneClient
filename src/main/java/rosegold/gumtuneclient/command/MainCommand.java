@@ -100,6 +100,11 @@ public class MainCommand {
         RotationUtils.smoothLook(new RotationUtils.Rotation(Float.parseFloat(pitch), Float.parseFloat(yaw)), 250);
     }
 
+    @SubCommand(description = "Test isBlockVisible")
+    private void isblockvisible() {
+        ModUtils.sendMessage("Block is visible: " + BlockUtils.isBlockVisible(GumTuneClient.mc.objectMouseOver.getBlockPos()));
+    }
+
     @SubCommand(description = "Break specified block", aliases = {"break"})
     private void breakblock(String x, String y, String z) {
         if (x == null || !isInteger(x)) {

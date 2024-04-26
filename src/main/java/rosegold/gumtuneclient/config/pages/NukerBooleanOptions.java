@@ -26,4 +26,10 @@ public class NukerBooleanOptions {
             description = "Use pickaxe ability when ready"
     )
     public static boolean pickaxeAbility = false;
+
+    @Switch(
+            name = "Only Visible Blocks",
+            description = "Only mine blocks that are visible"
+    )
+    public static boolean onlyVisibleBlocks = false;
 }

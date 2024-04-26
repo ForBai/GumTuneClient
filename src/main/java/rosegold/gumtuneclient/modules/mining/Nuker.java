@@ -103,7 +103,10 @@ public class Nuker {
         for (BlockPos blockPos : BlockPos.getAllInBox(playerPos.subtract(vec3Bottom), playerPos.add(vec3Top))) {
             Vec3 target = new Vec3(blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5);
             if (Math.abs(RotationUtils.wrapAngleTo180(RotationUtils.fovToVec3(target) - RotationUtils.wrapAngleTo180(GumTuneClient.mc.thePlayer.rotationYaw))) < (float) NukerSliderOptions.nukerFieldOfView / 2)
-                blocksInRange.add(blockPos);
+                if (NukerBooleanOptions.onlyVisibleBlocks) {
+                    if (BlockUtils.isBlockVisible(blockPos))
+                        blocksInRange.add(blockPos);
+                } else blocksInRange.add(blockPos);
         }
 
         if (System.currentTimeMillis() - stuckTimestamp > NukerSliderOptions.nukerStuckTimer) {
@@ -470,8 +473,8 @@ public class Nuker {
                 (LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES || LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT) &&
                         NukerBlockFilter.nukerBlockFilterUmber &&
                         ((block == Blocks.double_stone_slab2 && blockState.getValue(BlockStoneSlabNew.VARIANT) == BlockStoneSlabNew.EnumType.RED_SANDSTONE) ||
-                                        block == Blocks.hardened_clay ||
-                                        (block == Blocks.stained_hardened_clay && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.BROWN))
+                                block == Blocks.hardened_clay ||
+                                (block == Blocks.stained_hardened_clay && blockState.getValue(BlockColored.COLOR) == EnumDyeColor.BROWN))
         ) return true;
 
         if (
