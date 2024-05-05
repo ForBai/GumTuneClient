@@ -88,7 +88,7 @@ public class MainCommand {
 
     @SubCommand(description = "Rotate to <yaw, pitch>")
     private void rotate(String pitch, String yaw) {
-        if (pitch == null || !isNumeric(yaw)) {
+        if (pitch == null || !isNumeric(pitch)) {
             ModUtils.sendMessage("&cInvalid pitch: " + pitch);
             return;
         }
@@ -98,6 +98,67 @@ public class MainCommand {
         }
 
         RotationUtils.smoothLook(new RotationUtils.Rotation(Float.parseFloat(pitch), Float.parseFloat(yaw)), 250);
+    }
+
+    @SubCommand(description = "Rotate to <yaw, pitch, time, randomness>")
+    private void r2(String pitch, String yaw, String time, String randomness) {
+        if (pitch == null || !isNumeric(yaw)) {
+            ModUtils.sendMessage("&cInvalid pitch: " + pitch);
+            return;
+        }
+        if (yaw == null || !isNumeric(yaw)) {
+            ModUtils.sendMessage("&cInvalid yaw:" + yaw);
+            return;
+        }
+        if (time == null || !isNumeric(time)) {
+            ModUtils.sendMessage("&cInvalid time:" + time);
+            return;
+        }
+        if (randomness == null || !isNumeric(randomness)) {
+            ModUtils.sendMessage("&cInvalid randomness:" + randomness);
+            return;
+        }
+        float extraYaw = (float) (Math.random() * Float.parseFloat(randomness) * 2 - Float.parseFloat(randomness));
+        float extraPitch = (float) (Math.random() * Float.parseFloat(randomness) * 2 - Float.parseFloat(randomness));
+        ModUtils.sendMessage("Yaw: " + (Float.parseFloat(yaw)) + " Pitch: " + (Float.parseFloat(pitch)));
+        ModUtils.sendMessage("p:" + extraPitch + " y:" + extraYaw);
+        RotationUtils.smoothLook(new RotationUtils.Rotation(Float.parseFloat(pitch) + extraPitch, Float.parseFloat(yaw) + extraYaw), Long.parseLong(time));
+    }
+
+    @SubCommand(description = "Rotate to <x, y, z time, randomness>")
+    private void r3(String x, String y, String z, String time, String randomness) {
+        if (x == null || !isNumeric(x)) {
+            ModUtils.sendMessage("&cInvalid x: " + x);
+            return;
+        }
+        if (y == null || !isNumeric(y)) {
+            ModUtils.sendMessage("&cInvalid y: " + y);
+            return;
+        }
+        if (z == null || !isNumeric(z)) {
+            ModUtils.sendMessage("&cInvalid z: " + z);
+            return;
+        }
+        if (time == null || !isNumeric(time)) {
+            ModUtils.sendMessage("&cInvalid time:" + time);
+            return;
+        }
+        if (randomness == null || !isNumeric(randomness)) {
+            ModUtils.sendMessage("&cInvalid randomness:" + randomness);
+            return;
+        }
+        RotationUtils.Rotation rotation = RotationUtils.getRotation(new BlockPos(Integer.parseInt(x), Integer.parseInt(y), Integer.parseInt(z)));
+        if (rotation == null) {
+            ModUtils.sendMessage("Block is not visible");
+            return;
+        }
+        ModUtils.sendMessage(rotation);
+        float extraYaw = (float) (Math.random() * Float.parseFloat(randomness) * 2 - Float.parseFloat(randomness));
+        float extraPitch = (float) (Math.random() * Float.parseFloat(randomness) * 2 - Float.parseFloat(randomness));
+        ModUtils.sendMessage("p:" + extraPitch + " y:" + extraYaw);
+        RotationUtils.Rotation rotation1 = new RotationUtils.Rotation(rotation.getPitch() + extraPitch, rotation.getYaw() + extraYaw);
+        ModUtils.sendMessage(rotation1);
+        RotationUtils.smoothLook(rotation1, Long.parseLong(time));
     }
 
     @SubCommand(description = "Test isBlockVisible")

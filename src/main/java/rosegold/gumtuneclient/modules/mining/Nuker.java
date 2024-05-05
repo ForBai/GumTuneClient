@@ -480,7 +480,7 @@ public class Nuker {
         if (
                 (LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES || LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT) &&
                         NukerBlockFilter.nukerBlockFilterTungsten &&
-                        (block == Blocks.cobblestone || block == Blocks.clay)
+                        (block == Blocks.cobblestone || block == Blocks.clay || (block == Blocks.stone_slab && blockState.getValue(BlockStoneSlab.VARIANT) == BlockStoneSlab.EnumType.COBBLESTONE) || block == Blocks.stone_stairs)
         ) return true;
 
         if (

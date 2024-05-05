@@ -24,6 +24,7 @@ public class RotationUtils {
     public static float currentFakeYaw;
     public static float currentFakePitch;
     public static boolean done = true;
+
     private enum RotationType {
         NORMAL,
         SERVER
@@ -36,6 +37,13 @@ public class RotationUtils {
         public float yaw;
 
         public Rotation(float pitch, float yaw) {
+            if (pitch > 90) {
+                ModUtils.sendMessage("Pitch was out of bounds("+pitch+")! Setting to 90");
+                pitch = 90;
+            } else if (pitch < -90) {
+                ModUtils.sendMessage("Pitch was out of bounds("+pitch+")! Setting to -90");
+                pitch = -90;
+            }
             this.pitch = pitch;
             this.yaw = yaw;
         }
@@ -130,7 +138,7 @@ public class RotationUtils {
         final double diffY = vec.yCoord - (mc.thePlayer.posY + mc.thePlayer.getEyeHeight());
         final double diffZ = vec.zCoord - mc.thePlayer.posZ;
         final double dist = MathHelper.sqrt_double(diffX * diffX + diffZ * diffZ);
-        return getVectorForRotation((float)(-(MathHelper.atan2(diffY, dist) * 180.0 / 3.141592653589793)), (float)(MathHelper.atan2(diffZ, diffX) * 180.0 / 3.141592653589793 - 90.0));
+        return getVectorForRotation((float) (-(MathHelper.atan2(diffY, dist) * 180.0 / 3.141592653589793)), (float) (MathHelper.atan2(diffZ, diffX) * 180.0 / 3.141592653589793 - 90.0));
     }
 
     public static Rotation getNeededChange(Rotation endRot) {
@@ -183,6 +191,19 @@ public class RotationUtils {
         startTime = System.currentTimeMillis();
         endTime = System.currentTimeMillis() + time;
     }
+
+//    public static void smoothLook(Rotation rotation, long time,float random) {
+//        rotationType = RotationType.NORMAL;
+//        done = false;
+//        startRot = new Rotation(mc.thePlayer.rotationPitch, mc.thePlayer.rotationYaw);
+//
+//        Rotation neededChange = getNeededChange(startRot, rotation);
+//
+//        endRot = new Rotation(startRot.pitch + neededChange.pitch, startRot.yaw + neededChange.yaw);
+//
+//        startTime = System.currentTimeMillis();
+//        endTime = System.currentTimeMillis() + time;
+//    }
 
     public static void smartSmoothLook(Rotation rotation, int msPer180) {
         float rotationDifference = wrapAngleTo180(Math.max(
