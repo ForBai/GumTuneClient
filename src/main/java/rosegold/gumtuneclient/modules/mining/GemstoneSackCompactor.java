@@ -7,13 +7,12 @@ import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import rosegold.gumtuneclient.GumTuneClient;
 import rosegold.gumtuneclient.config.GumTuneClientConfig;
 import rosegold.gumtuneclient.events.MillisecondEvent;
-import rosegold.gumtuneclient.events.ScreenClosedEvent;
-import rosegold.gumtuneclient.modules.player.AutoSell;
-import rosegold.gumtuneclient.utils.*;
+import rosegold.gumtuneclient.utils.GuiUtils;
+import rosegold.gumtuneclient.utils.InventoryUtils;
+import rosegold.gumtuneclient.utils.StringUtils;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -23,10 +22,10 @@ import static rosegold.gumtuneclient.GumTuneClient.mc;
 
 public class GemstoneSackCompactor {
     private final boolean[] gemstoneToggles = {
-        false, false, false, false, false, false, false
+            false, false, false, false, false, false, false
     };
     private final String[] gemstoneTypes = {
-        "Jade", "Amber", "Topaz", "Sapphire", "Amethyst", "Jasper", "Ruby"
+            "Jade", "Amber", "Topaz", "Sapphire", "Amethyst", "Jasper", "Ruby"
     };
     private long timestamp = 0;
 
@@ -85,7 +84,7 @@ public class GemstoneSackCompactor {
                         if (itemStack != null) {
                             String stored = StringUtils.removeFormatting(Objects.requireNonNull(InventoryUtils.getItemLore(itemStack, 7))).replaceAll("[A-z,: ]", "");
                             if (!stored.startsWith("0")) {
-                                clickSlot(i + 10);
+                                InventoryUtils.clickSlot(i + 10, InventoryUtils.ClickType.LEFT, InventoryUtils.ClickMode.PICKUP);
                                 break;
                             }
                         }
@@ -108,15 +107,5 @@ public class GemstoneSackCompactor {
                 event.button.displayString = "§" + (gemstoneToggles[buttonId - 110] ? "a" : "c") + gemstoneTypes[buttonId - 110];
             }
         }
-    }
-
-    private void clickSlot(int slot) {
-        GumTuneClient.mc.playerController.windowClick(
-                GumTuneClient.mc.thePlayer.openContainer.windowId,
-                slot,
-                0,
-                0,
-                GumTuneClient.mc.thePlayer
-        );
     }
 }

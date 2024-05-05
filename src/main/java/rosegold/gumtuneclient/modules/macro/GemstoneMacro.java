@@ -23,6 +23,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -61,14 +62,15 @@ public class GemstoneMacro {
         AOTV_WALK,
         AOTV_ROTATE,
         AOTV_TELEPORT,
-        SETUP_ROTATE_TO_BLOCK,
-        ROTATE_TO_BLOCK,
-        MINING,
-        SPAWN_ARMADILLO,
-        MOUNT_ARMADILLO,
-        ROTATE_ARMADILLO,
-        DISMOUNT_ARMADILLO,
-        POST_DISMOUNT_ARMADILLO,
+        TOGGLE_NUKER,
+//        SETUP_ROTATE_TO_BLOCK,
+//        ROTATE_TO_BLOCK,
+//        MINING,
+//        SPAWN_ARMADILLO,
+//        MOUNT_ARMADILLO,
+//        ROTATE_ARMADILLO,
+//        DISMOUNT_ARMADILLO,
+//        POST_DISMOUNT_ARMADILLO,
         SLEEP_2000
     }
 
@@ -116,13 +118,13 @@ public class GemstoneMacro {
             if (!enabled) {
                 ModUtils.sendMessage("Final Gemstone Macro Uptime: " + StringUtils.millisecondFormatTime(System.currentTimeMillis() - startTimestamp));
 
-                if (current != null && GumTuneClient.mc.thePlayer != null) {
-                    GumTuneClient.mc.thePlayer.sendQueue.addToSendQueue(new C07PacketPlayerDigging(
-                            C07PacketPlayerDigging.Action.ABORT_DESTROY_BLOCK,
-                            current,
-                            EnumFacing.DOWN)
-                    );
-                }
+//                if (current != null && GumTuneClient.mc.thePlayer != null) {
+//                    GumTuneClient.mc.thePlayer.sendQueue.addToSendQueue(new C07PacketPlayerDigging(
+//                            C07PacketPlayerDigging.Action.ABORT_DESTROY_BLOCK,
+//                            current,
+//                            EnumFacing.DOWN)
+//                    );
+//                }
 
                 current = null;
                 currentProgress = 0;
@@ -254,7 +256,7 @@ public class GemstoneMacro {
 
         broken.releaseEntries();
 
-        int rodSlot = InventoryUtils.findItemInHotbar("Rod");
+//        int rodSlot = InventoryUtils.findItemInHotbar("Rod");
         Waypoint nextWaypoint = activeList.waypoints.get(activeList.getNextIndex(currentIndex));
 
         switch (gemMacroState) {
@@ -265,8 +267,7 @@ public class GemstoneMacro {
                     if (viablePointOnBlock != null) {
                         int aotvSlot = InventoryUtils.findItemInHotbarSkyblockId("ASPECT_OF_THE_VOID");
                         if (aotvSlot != -1) {
-                            GumTuneClient.mc.thePlayer.inventory.currentItem = aotvSlot;
-                            GumTuneClient.mc.getNetHandler().addToSendQueue(new C09PacketHeldItemChange(GumTuneClient.mc.thePlayer.inventory.currentItem));
+                            InventoryUtils.holdItemSb("ASPECT_OF_THE_VOID");
 
                             RotationUtils.smoothLook(RotationUtils.getRotation(viablePointOnBlock), GumTuneClientConfig.aotvGemstoneMacroRotationSpeed);
                             gemMacroState = GemMacroState.AOTV_WALK;
@@ -288,17 +289,19 @@ public class GemstoneMacro {
                         );
 
                         if (movingObjectPosition != null && movingObjectPosition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-                            BlockPos blockPos = movingObjectPosition.getBlockPos();
-                            if (GumTuneClient.mc.thePlayer.getDistance(blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5) < 4.5) {
-                                if (equipPickaxe()) {
-                                    ModUtils.sendMessage("Breaking block in the way");
-                                    breakBlock(blockPos);
-                                }
-                            } else {
-                                ModUtils.sendMessage("block in the way is too far away to break :(, pausing macro for 2 seconds");
-                            }
-                            timestamp = System.currentTimeMillis();
-                            gemMacroState = GemMacroState.SLEEP_2000;
+                            ModUtils.sendMessage("Block in the way! Disabling Gemstone Macro");
+                            enabled = false;
+//                            BlockPos blockPos = movingObjectPosition.getBlockPos();
+//                            if (GumTuneClient.mc.thePlayer.getDistance(blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5) < 4.5) {
+//                                if (equipPickaxe()) {
+//                                    ModUtils.sendMessage("Breaking block in the way");
+//                                    breakBlock(blockPos);
+//                                }
+//                            } else {
+//                                ModUtils.sendMessage("block in the way is too far away to break :(, pausing macro for 2 seconds");
+//                            }
+//                            timestamp = System.currentTimeMillis();
+//                            gemMacroState = GemMacroState.SLEEP_2000;
                         }
                     }
                 }
@@ -322,7 +325,8 @@ public class GemstoneMacro {
                     KeyBinding.setKeyBindState(GumTuneClient.mc.gameSettings.keyBindForward.getKeyCode(), false);
                     gemMacroState = GemMacroState.AOTV_TELEPORT;
                     timestamp = System.currentTimeMillis();
-                    GumTuneClient.mc.getNetHandler().addToSendQueue(new C08PacketPlayerBlockPlacement(GumTuneClient.mc.thePlayer.getHeldItem()));
+//                    GumTuneClient.mc.getNetHandler().addToSendQueue(new C08PacketPlayerBlockPlacement(GumTuneClient.mc.thePlayer.getHeldItem()));
+                    PlayerUtils.rightClick();
                 }
                 break;
             case AOTV_TELEPORT:
@@ -331,6 +335,7 @@ public class GemstoneMacro {
 
                     if (GumTuneClient.mc.theWorld.getBlockState(blockPos).getBlock() == Blocks.air) {
                         ModUtils.sendMessage("Next point is air!!!");
+                        KeyBinding.setKeyBindState(GumTuneClient.mc.gameSettings.keyBindSneak.getKeyCode(), false);
                         break;
                     }
 
@@ -345,11 +350,14 @@ public class GemstoneMacro {
                     }
 
                     timestamp = System.currentTimeMillis();
-                    gemMacroState = GumTuneClientConfig.aotvGemstoneMacroMiningMode == 2 ? GemMacroState.SPAWN_ARMADILLO : GemMacroState.SETUP_ROTATE_TO_BLOCK;
+//                    gemMacroState = GumTuneClientConfig.aotvGemstoneMacroMiningMode == 2 ? GemMacroState.SPAWN_ARMADILLO : GemMacroState.SETUP_ROTATE_TO_BLOCK;
                     KeyBinding.setKeyBindState(GumTuneClient.mc.gameSettings.keyBindSneak.getKeyCode(), false);
+                    gemMacroState = GemMacroState.TOGGLE_NUKER;
                 }
                 break;
-            case SETUP_ROTATE_TO_BLOCK:
+            case TOGGLE_NUKER:
+
+//            case SETUP_ROTATE_TO_BLOCK:
 //                current = BlockUtils.getEasiestBlock(5, 5, 4, this::canMine);
 //
 //                if (current != null && !GumTuneClientConfig.aotvGemstoneMacroMineBlocksBehindWalls) {
@@ -381,14 +389,14 @@ public class GemstoneMacro {
 //                }
 //
 //                timestamp = System.currentTimeMillis();
-                break;
-            case ROTATE_TO_BLOCK:
+//                break;
+//            case ROTATE_TO_BLOCK:
 //                if (System.currentTimeMillis() - timestamp > GumTuneClientConfig.aotvGemstoneMacroRotationSpeed) {
 //                    gemMacroState = GemMacroState.MINING;
 //                    timestamp = System.currentTimeMillis();
 //                }
-                break;
-            case MINING:
+//                break;
+//            case MINING:
 //                if (current != null) {
 //                    if (mining && PlayerUtils.pickaxeAbilityReady) {
 //                        GumTuneClient.mc.playerController.sendUseItem(
@@ -423,88 +431,88 @@ public class GemstoneMacro {
 //                        gemMacroState = GemMacroState.SETUP_ROTATE_TO_BLOCK;
 //                    }
 //                }
-                break;
-            case SPAWN_ARMADILLO:
-                if (rodSlot != -1) {
-                    RotationUtils.smoothLookRelative(new RotationUtils.Rotation(random.nextFloat() - 0.5f, 0), GumTuneClientConfig.aotvGemstoneMacroRotationSpeed, true);
-
-                    GumTuneClient.mc.thePlayer.inventory.currentItem = rodSlot;
-
-                    GumTuneClient.mc.playerController.sendUseItem(
-                            GumTuneClient.mc.thePlayer,
-                            GumTuneClient.mc.theWorld,
-                            GumTuneClient.mc.thePlayer.getHeldItem()
-                    );
-
-                    gemMacroState = GemMacroState.MOUNT_ARMADILLO;
-                }
-                break;
-            case MOUNT_ARMADILLO:
-                if (System.currentTimeMillis() - timestamp > 200) {
-                    Entity zombie = GumTuneClient.mc.theWorld.loadedEntityList.stream().filter(
-                            entity -> entity instanceof EntityZombie && entity.isInvisible() && GumTuneClient.mc.thePlayer.getDistanceSqToEntity(entity) < 10
-                    ).findAny().orElse(null);
-
-                    if (zombie != null) {
-                        GumTuneClient.mc.getNetHandler().addToSendQueue(new C02PacketUseEntity(zombie, C02PacketUseEntity.Action.INTERACT));
-
-                        if (GumTuneClient.mc.thePlayer.isRiding()) {
-                            if (equipPickaxe()) {
-
-                                KeyBinding.setKeyBindState(GumTuneClient.mc.gameSettings.keyBindJump.getKeyCode(), true);
-                                gemMacroState = GemMacroState.ROTATE_ARMADILLO;
-                            }
-                        }
-                        timestamp = System.currentTimeMillis();
-                    }
-                }
-                break;
-            case ROTATE_ARMADILLO:
-                if (Math.round(GumTuneClient.mc.thePlayer.posY % 1 * 10000) != 1125) {
-                    KeyBinding.setKeyBindState(GumTuneClient.mc.gameSettings.keyBindJump.getKeyCode(), false);
-                    RotationUtils.smoothLookRelative(new RotationUtils.Rotation(random.nextFloat() - 0.5f, 360 + random.nextFloat() - 0.5f), GumTuneClientConfig.aotvGemstoneMacroRotationSpeed, true);
-                    timestamp = System.currentTimeMillis();
-                    gemMacroState = GemMacroState.DISMOUNT_ARMADILLO;
-                }
-                break;
-            case DISMOUNT_ARMADILLO:
-                if (System.currentTimeMillis() - timestamp > GumTuneClientConfig.aotvGemstoneMacroRotationSpeed) {
-                    switch (GumTuneClientConfig.aotvGemstoneMacroDismountArmadilloMode) {
-                        case 0:
-                            KeyBinding.setKeyBindState(GumTuneClient.mc.gameSettings.keyBindSneak.getKeyCode(), true);
-                            break;
-                        case 1:
-                            if (rodSlot != -1) {
-                                GumTuneClient.mc.thePlayer.inventory.currentItem = rodSlot;
-
-                                GumTuneClient.mc.playerController.sendUseItem(
-                                        GumTuneClient.mc.thePlayer,
-                                        GumTuneClient.mc.theWorld,
-                                        GumTuneClient.mc.thePlayer.getHeldItem()
-                                );
-                            }
-                            break;
-                    }
-
-                    Waypoint waypoint = activeList.waypoints.get(activeList.getNextIndex(activeList.getNextIndex(currentIndex)));
-                    if (waypoint != null) {
-                        Vec3 viablePointOnNextBlock = BlockUtils.getViablePointsOnBlock(new BlockPos(waypoint.x, waypoint.y, waypoint.z), null, 60, true, true).stream().findAny().orElse(null);
-                        if (viablePointOnNextBlock != null) {
-                            RotationUtils.smoothLook(RotationUtils.getRotation(viablePointOnNextBlock), GumTuneClientConfig.aotvGemstoneMacroRotationSpeed);
-                        }
-                    }
-                    gemMacroState = GemMacroState.POST_DISMOUNT_ARMADILLO;
-                    timestamp = System.currentTimeMillis();
-                }
-                break;
-            case POST_DISMOUNT_ARMADILLO:
-                if (GumTuneClient.mc.thePlayer.onGround) {
-                    ModUtils.sendMessage("landing took " + (System.currentTimeMillis() - timestamp));
-                    timestamp = System.currentTimeMillis();
-                    gemMacroState = GemMacroState.AOTV_SETUP;
-                    currentIndex = activeList.getNextIndex(currentIndex);
-                }
-                break;
+//                break;
+//            case SPAWN_ARMADILLO:
+//                if (rodSlot != -1) {
+//                    RotationUtils.smoothLookRelative(new RotationUtils.Rotation(random.nextFloat() - 0.5f, 0), GumTuneClientConfig.aotvGemstoneMacroRotationSpeed, true);
+//
+//                    GumTuneClient.mc.thePlayer.inventory.currentItem = rodSlot;
+//
+//                    GumTuneClient.mc.playerController.sendUseItem(
+//                            GumTuneClient.mc.thePlayer,
+//                            GumTuneClient.mc.theWorld,
+//                            GumTuneClient.mc.thePlayer.getHeldItem()
+//                    );
+//
+//                    gemMacroState = GemMacroState.MOUNT_ARMADILLO;
+//                }
+//                break;
+//            case MOUNT_ARMADILLO:
+//                if (System.currentTimeMillis() - timestamp > 200) {
+//                    Entity zombie = GumTuneClient.mc.theWorld.loadedEntityList.stream().filter(
+//                            entity -> entity instanceof EntityZombie && entity.isInvisible() && GumTuneClient.mc.thePlayer.getDistanceSqToEntity(entity) < 10
+//                    ).findAny().orElse(null);
+//
+//                    if (zombie != null) {
+//                        GumTuneClient.mc.getNetHandler().addToSendQueue(new C02PacketUseEntity(zombie, C02PacketUseEntity.Action.INTERACT));
+//
+//                        if (GumTuneClient.mc.thePlayer.isRiding()) {
+//                            if (equipPickaxe()) {
+//
+//                                KeyBinding.setKeyBindState(GumTuneClient.mc.gameSettings.keyBindJump.getKeyCode(), true);
+//                                gemMacroState = GemMacroState.ROTATE_ARMADILLO;
+//                            }
+//                        }
+//                        timestamp = System.currentTimeMillis();
+//                    }
+//                }
+//                break;
+//            case ROTATE_ARMADILLO:
+//                if (Math.round(GumTuneClient.mc.thePlayer.posY % 1 * 10000) != 1125) {
+//                    KeyBinding.setKeyBindState(GumTuneClient.mc.gameSettings.keyBindJump.getKeyCode(), false);
+//                    RotationUtils.smoothLookRelative(new RotationUtils.Rotation(random.nextFloat() - 0.5f, 360 + random.nextFloat() - 0.5f), GumTuneClientConfig.aotvGemstoneMacroRotationSpeed, true);
+//                    timestamp = System.currentTimeMillis();
+//                    gemMacroState = GemMacroState.DISMOUNT_ARMADILLO;
+//                }
+//                break;
+//            case DISMOUNT_ARMADILLO:
+//                if (System.currentTimeMillis() - timestamp > GumTuneClientConfig.aotvGemstoneMacroRotationSpeed) {
+//                    switch (GumTuneClientConfig.aotvGemstoneMacroDismountArmadilloMode) {
+//                        case 0:
+//                            KeyBinding.setKeyBindState(GumTuneClient.mc.gameSettings.keyBindSneak.getKeyCode(), true);
+//                            break;
+//                        case 1:
+//                            if (rodSlot != -1) {
+//                                GumTuneClient.mc.thePlayer.inventory.currentItem = rodSlot;
+//
+//                                GumTuneClient.mc.playerController.sendUseItem(
+//                                        GumTuneClient.mc.thePlayer,
+//                                        GumTuneClient.mc.theWorld,
+//                                        GumTuneClient.mc.thePlayer.getHeldItem()
+//                                );
+//                            }
+//                            break;
+//                    }
+//
+//                    Waypoint waypoint = activeList.waypoints.get(activeList.getNextIndex(activeList.getNextIndex(currentIndex)));
+//                    if (waypoint != null) {
+//                        Vec3 viablePointOnNextBlock = BlockUtils.getViablePointsOnBlock(new BlockPos(waypoint.x, waypoint.y, waypoint.z), null, 60, true, true).stream().findAny().orElse(null);
+//                        if (viablePointOnNextBlock != null) {
+//                            RotationUtils.smoothLook(RotationUtils.getRotation(viablePointOnNextBlock), GumTuneClientConfig.aotvGemstoneMacroRotationSpeed);
+//                        }
+//                    }
+//                    gemMacroState = GemMacroState.POST_DISMOUNT_ARMADILLO;
+//                    timestamp = System.currentTimeMillis();
+//                }
+//                break;
+//            case POST_DISMOUNT_ARMADILLO:
+//                if (GumTuneClient.mc.thePlayer.onGround) {
+//                    ModUtils.sendMessage("landing took " + (System.currentTimeMillis() - timestamp));
+//                    timestamp = System.currentTimeMillis();
+//                    gemMacroState = GemMacroState.AOTV_SETUP;
+//                    currentIndex = activeList.getNextIndex(currentIndex);
+//                }
+//                break;
             case SLEEP_2000:
                 if (System.currentTimeMillis() - timestamp > 2000) {
                     gemMacroState = GemMacroState.AOTV_SETUP;
@@ -554,20 +562,20 @@ public class GemstoneMacro {
     }
 
     private void breakBlock(BlockPos blockPos) {
-        EnumFacing enumFacing = BlockUtils.calculateEnumfacing(new Vec3(blockPos).add(RandomUtils.randomVec()));
-        if (enumFacing != null) {
-            GumTuneClient.mc.thePlayer.sendQueue.addToSendQueue(new C07PacketPlayerDigging(
-                    C07PacketPlayerDigging.Action.START_DESTROY_BLOCK,
-                    blockPos,
-                    enumFacing
-            ));
-        } else {
-            GumTuneClient.mc.thePlayer.sendQueue.addToSendQueue(new C07PacketPlayerDigging(
-                    C07PacketPlayerDigging.Action.START_DESTROY_BLOCK,
-                    blockPos,
-                    GumTuneClient.mc.thePlayer.getHorizontalFacing().getOpposite()
-            ));
-        }
+//        EnumFacing enumFacing = BlockUtils.calculateEnumfacing(new Vec3(blockPos).add(RandomUtils.randomVec()));
+//        if (enumFacing != null) {
+//            GumTuneClient.mc.thePlayer.sendQueue.addToSendQueue(new C07PacketPlayerDigging(
+//                    C07PacketPlayerDigging.Action.START_DESTROY_BLOCK,
+//                    blockPos,
+//                    enumFacing
+//            ));
+//        } else {
+//            GumTuneClient.mc.thePlayer.sendQueue.addToSendQueue(new C07PacketPlayerDigging(
+//                    C07PacketPlayerDigging.Action.START_DESTROY_BLOCK,
+//                    blockPos,
+//                    GumTuneClient.mc.thePlayer.getHorizontalFacing().getOpposite()
+//            ));
+//        }
     }
 
     public static void loadConfig() {
