@@ -306,7 +306,7 @@ public class ESPs {
         return false;
     }
 
-    private boolean matchSkullTexture(EntityArmorStand entity, String... skullTextures) {
+    public static boolean matchSkullTexture(EntityArmorStand entity, String... skullTextures) {
         ItemStack helmetItemStack = entity.getCurrentArmor(3);
         if (helmetItemStack != null && helmetItemStack.getItem() instanceof ItemSkull) {
             NBTTagList textures = helmetItemStack.serializeNBT().getCompoundTag("tag").getCompoundTag("SkullOwner").getCompoundTag("Properties").getTagList("textures", Constants.NBT.TAG_COMPOUND);
@@ -321,7 +321,7 @@ public class ESPs {
         return false;
     }
 
-    private boolean matchHeldItemTexture(EntityArmorStand entity, String... skullTextures) {
+    public static boolean matchHeldItemTexture(EntityArmorStand entity, String... skullTextures) {
         ItemStack heldItemStack = entity.getCurrentArmor(-1);
         if (heldItemStack != null && heldItemStack.getItem() instanceof ItemSkull) {
             NBTTagList textures = heldItemStack.serializeNBT().getCompoundTag("tag").getCompoundTag("SkullOwner").getCompoundTag("Properties").getTagList("textures", Constants.NBT.TAG_COMPOUND);

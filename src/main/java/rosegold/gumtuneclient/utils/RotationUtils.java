@@ -37,13 +37,6 @@ public class RotationUtils {
         public float yaw;
 
         public Rotation(float pitch, float yaw) {
-            if (pitch > 90) {
-                ModUtils.sendMessage("Pitch was out of bounds("+pitch+")! Setting to 90");
-                pitch = 90;
-            } else if (pitch < -90) {
-                ModUtils.sendMessage("Pitch was out of bounds("+pitch+")! Setting to -90");
-                pitch = -90;
-            }
             this.pitch = pitch;
             this.yaw = yaw;
         }
