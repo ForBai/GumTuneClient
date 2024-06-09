@@ -10,6 +10,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.init.Blocks;
+import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
@@ -17,6 +18,7 @@ import net.minecraft.util.Vec3;
 import rosegold.gumtuneclient.GumTuneClient;
 import rosegold.gumtuneclient.modules.player.PathFinding;
 import rosegold.gumtuneclient.modules.render.CustomBlockESP;
+import rosegold.gumtuneclient.modules.render.ESPs;
 import rosegold.gumtuneclient.utils.*;
 import rosegold.gumtuneclient.utils.pathfinding.PathFinder;
 
@@ -192,6 +194,17 @@ public class MainCommand {
                     objectMouseOver.sideHit)
             );
         }
+    }
+
+    @SubCommand(description = "open closest dungeon chest", aliases = {"dc"})
+    private void opendungeonchest() {
+        GumTuneClient.mc.theWorld.loadedEntityList.stream().filter(
+                entity -> entity instanceof EntityArmorStand
+        ).filter(
+                entity -> ESPs.matchSkullTexture((EntityArmorStand) entity, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWE3MzZlYjFhN2NlNWE1ZjVkNWIxNjg5MzFmYTMxMzk2Mzg2YzE2MDU2OGI0MTk2NGJhODZjZGI5ZWQ2YmUifX19")
+        ).min(Comparator.comparingDouble(entity -> entity.getDistanceToEntity(GumTuneClient.mc.thePlayer))).ifPresent(
+                entity -> GumTuneClient.mc.thePlayer.sendQueue.addToSendQueue(new C02PacketUseEntity(entity, C02PacketUseEntity.Action.INTERACT))
+        );
     }
 
     @SubCommand(description = "walk to blockpos")

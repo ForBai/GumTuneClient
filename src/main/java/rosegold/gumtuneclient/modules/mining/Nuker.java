@@ -596,6 +596,8 @@ public class Nuker {
                 (block == Blocks.stone && blockState.getValue(BlockStone.VARIANT) == BlockStone.EnumType.DIORITE_SMOOTH) ||
                 block == Blocks.obsidian || (LocationUtils.currentIsland == LocationUtils.Island.THE_RIFT && block == Blocks.lapis_ore) ||
                 block == Blocks.packed_ice || block == Blocks.clay ||
+                ((LocationUtils.currentIsland == LocationUtils.Island.THE_HUB) && block == Blocks.sand) ||
+                ((LocationUtils.currentIsland == LocationUtils.Island.THE_HUB) && block == Blocks.gravel) ||
                 ((LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT || LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES) && block == Blocks.double_stone_slab2 && blockState.getValue(BlockStoneSlabNew.VARIANT) == BlockStoneSlabNew.EnumType.RED_SANDSTONE) ||
                 ((LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT || LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES) && block == Blocks.hardened_clay) ||
                 ((LocationUtils.currentIsland == LocationUtils.Island.DWARVEN_MINES || LocationUtils.currentIsland == LocationUtils.Island.MINESHAFT) && NukerBlockFilter.nukerBlockFilterTungsten && block == Blocks.cobblestone) ||
