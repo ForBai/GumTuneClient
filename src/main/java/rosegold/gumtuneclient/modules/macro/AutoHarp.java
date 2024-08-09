@@ -33,6 +33,7 @@ public class AutoHarp {
 
     @SubscribeEvent
     public final void onGuiOpen(@NotNull GuiOpenEvent event) {
+        if (GumTuneClientConfig.harpMacro) return;
         inHarp = GuiUtils.getInventoryName(event.gui).startsWith("Harp -");
         updates = 0;
         currentInventory.clear();
@@ -40,6 +41,7 @@ public class AutoHarp {
 
     @SubscribeEvent
     public void onGuiClose(ScreenClosedEvent event) {
+        if (GumTuneClientConfig.harpMacro) return;
         inHarp = false;
         updates = 0;
         currentInventory.clear();
@@ -47,6 +49,7 @@ public class AutoHarp {
 
     @SubscribeEvent
     public void onBackgroundDraw(GuiScreenEvent.BackgroundDrawnEvent event) {
+        if (GumTuneClientConfig.harpMacro) return;
         if (!inHarp) return;
         if (mc.thePlayer.openContainer.inventorySlots.size() != currentInventory.size()) {
             for (Slot slot : mc.thePlayer.openContainer.inventorySlots) {
@@ -101,6 +104,7 @@ public class AutoHarp {
 
     @SubscribeEvent
     public void onGuiRender(GuiScreenEvent.DrawScreenEvent.Post event) {
+        if (GumTuneClientConfig.harpMacro) return;
         if (!inHarp) return;
         GlStateManager.disableLighting();
         GlStateManager.disableDepth();
