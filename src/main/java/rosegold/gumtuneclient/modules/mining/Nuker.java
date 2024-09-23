@@ -6,6 +6,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
+import net.minecraft.network.play.server.S2APacketParticles;
 import net.minecraft.util.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -20,6 +21,7 @@ import rosegold.gumtuneclient.config.pages.NukerBlockFilter;
 import rosegold.gumtuneclient.config.pages.NukerBooleanOptions;
 import rosegold.gumtuneclient.config.pages.NukerSliderOptions;
 import rosegold.gumtuneclient.events.MillisecondEvent;
+import rosegold.gumtuneclient.events.PacketReceivedEvent;
 import rosegold.gumtuneclient.events.PlayerMoveEvent;
 import rosegold.gumtuneclient.events.SecondEvent;
 import rosegold.gumtuneclient.modules.macro.GemstoneMacro;
@@ -38,6 +40,7 @@ public class Nuker {
     private long abilityTimestamp = 0;
     private BlockPos current;
     private final ArrayList<BlockPos> blocksInRange = new ArrayList<>();
+    private boolean particleSpawned;
 
     @SubscribeEvent
     public void onKey(InputEvent.KeyInputEvent event) {
@@ -70,6 +73,7 @@ public class Nuker {
                 RotationUtils.reset();
                 blockPos = null;
                 current = null;
+                particleSpawned = false;
             }
         }
     }
@@ -113,6 +117,7 @@ public class Nuker {
             stuckTimestamp = System.currentTimeMillis();
             blockPos = null;
             current = null;
+            particleSpawned = false;
         }
 
         if (current != null) GumTuneClient.mc.thePlayer.swingItem();
@@ -123,6 +128,7 @@ public class Nuker {
         if (!isEnabled()) {
             current = null;
             if (broken.size() > 0) broken.clear();
+            particleSpawned = false;
             return;
         }
 
@@ -157,6 +163,7 @@ public class Nuker {
                     } else {
                         pinglessMineBlock(blockPos);
                         current = null;
+                        particleSpawned = false;
                     }
                     return;
                 }
@@ -184,6 +191,7 @@ public class Nuker {
                 } else {
                     pinglessMineBlock(blockPos);
                     current = null;
+                    particleSpawned = false;
                 }
             } else {
                 current = null;
@@ -197,7 +205,8 @@ public class Nuker {
         RenderUtils.renderEspBox(blockPos, event.partialTicks, Color.GRAY.getRGB());
         RenderUtils.renderEspBox(current, event.partialTicks, Color.BLUE.getRGB());
         if (NukerBooleanOptions.preview)
-            blocksInRange.forEach(bp -> RenderUtils.renderEspBox(bp, event.partialTicks, Color.CYAN.getRGB(), 0.1f));
+//            blocksInRange.stream().filter(b -> GumTuneClient.mc.theWorld.getBlockState(b).getBlock() != Blocks.air).forEach(bp -> RenderUtils.renderEspBox(bp, event.partialTicks, Color.CYAN.getRGB(), 0.1f));
+            RenderUtils.renderEspBlocks(blocksInRange);
     }
 
     @SubscribeEvent(priority = EventPriority.NORMAL)
@@ -219,6 +228,28 @@ public class Nuker {
                 break;
         }
     }
+
+//    @SubscribeEvent
+//    public void onParticelPacket(PacketReceivedEvent packet) {
+//        if (!isEnabled() || current == null) return;
+//        if (packet.packet instanceof S2APacketParticles) {
+//            S2APacketParticles packetParticles = (S2APacketParticles) packet.packet;
+//            if (!particleSpawned && packetParticles.getParticleType() == EnumParticleTypes.CRIT) {
+//                double x = Math.floor(packetParticles.getXCoordinate());
+//                double y = Math.floor(packetParticles.getYCoordinate());
+//                double z = Math.floor(packetParticles.getZCoordinate());
+//                if (Math.abs(x - (current.getX() + 0.5)) < 0.7 && Math.abs(y - (current.getY() + 0.5)) < 0.7 && Math.abs(z - (current.getZ() + 0.5)) < 0.7) {
+//                    Vec3 eyes = GumTuneClient.mc.thePlayer.getPositionEyes(1f);
+//                    Vec3 particle = new Vec3(x + (x - eyes.lengthVector()), y + (y - eyes.lengthVector()), z + (z - eyes.lengthVector()));
+//                    MovingObjectPosition result = BlockUtils.rayTraceBlocks(eyes, particle,false, true,false,b->false,false);
+//                    if (result.getBlockPos().equals(current)) {
+//                        particleSpawned = true;
+//                        RotationUtils.serverSmoothLook(RotationUtils.getRotation(new Vec3(x, y, z)), GumTuneClientConfig.nukerRotationSpeed);
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     private void mineBlock(BlockPos blockPos) {
         if (PowderChestSolver.particle == null) {
