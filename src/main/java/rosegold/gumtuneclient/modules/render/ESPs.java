@@ -301,7 +301,8 @@ public class ESPs {
                     name.contains("White Gift") && FrozenTreasureFilter.frozenTreasureWhiteGift ||
                     name.contains("Green Gift") && FrozenTreasureFilter.frozenTreasureGreenGift ||
                     name.contains("Red Gift") && FrozenTreasureFilter.frozenTreasureRedGift ||
-                    name.contains("Glacial Talisman") && FrozenTreasureFilter.frozenTreasureGlacialTalisman;
+                    name.contains("Glacial Talisman") && FrozenTreasureFilter.frozenTreasureGlacialTalisman ||
+                    name.contains("Frozen Bait") && FrozenTreasureFilter.frozenTreasureFrozenBait;
         }
         return false;
     }
