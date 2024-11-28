@@ -221,7 +221,7 @@ public class ESPs {
         if (!GumTuneClientConfig.ESPs) return;
         if (GumTuneClient.mc.thePlayer == null) return;
         if (highlightedEntities.isEmpty()) return;
-        if (highlightedEntityBlocks.isEmpty()) return;
+        //if (highlightedEntityBlocks.isEmpty()) return; //breaks mob esp completely
         GumTuneClient.mc.theWorld.loadedEntityList.forEach(entity -> {
             if (highlightedEntities.containsKey(entity)) {
                 RenderUtils.renderBoundingBox(entity, event.partialTicks, highlightedEntities.get(entity).getColor());
