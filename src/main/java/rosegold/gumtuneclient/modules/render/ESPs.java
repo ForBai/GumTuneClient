@@ -220,7 +220,7 @@ public class ESPs {
     public void onRenderWorld(RenderWorldLastEvent event) {
         if (!GumTuneClientConfig.ESPs) return;
         if (GumTuneClient.mc.thePlayer == null) return;
-        if (highlightedEntities.isEmpty()) return;
+        //if (highlightedEntities.isEmpty()) return; //breaks treasure esp, probably more
         //if (highlightedEntityBlocks.isEmpty()) return; //breaks mob esp completely
         GumTuneClient.mc.theWorld.loadedEntityList.forEach(entity -> {
             if (highlightedEntities.containsKey(entity)) {
@@ -230,10 +230,11 @@ public class ESPs {
                 }
             }
             if (highlightedEntityBlocks.containsKey(entity)) {
-                BlockPos blockPos = highlightedEntityBlocks.get(entity).getBlockPos();
+                HighlightBlock highlightBlock = highlightedEntityBlocks.get(entity);
+                BlockPos blockPos = highlightBlock.getBlockPos();
                 if (blockPos != null) {
-                    RenderUtils.renderEspBox(blockPos, event.partialTicks, highlightedEntities.get(entity).getColor());
-                    RenderUtils.renderWaypointText(highlightedEntityBlocks.get(entity).getName() == null ? "T" : highlightedEntityBlocks.get(entity).getName(), blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5, event.partialTicks);
+                    RenderUtils.renderEspBox(blockPos, event.partialTicks, GumTuneClientConfig.espColor.getRGB());
+                    RenderUtils.renderWaypointText(highlightBlock.getName() == null ? "T" : highlightedEntityBlocks.get(entity).getName(), blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5, event.partialTicks);
                 }
             }
         });
