@@ -16,7 +16,6 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
 import rosegold.gumtuneclient.GumTuneClient;
-import rosegold.gumtuneclient.command.MainCommand;
 import rosegold.gumtuneclient.config.GumTuneClientConfig;
 import rosegold.gumtuneclient.config.pages.NukerBlockFilter;
 import rosegold.gumtuneclient.config.pages.NukerBooleanOptions;
@@ -46,6 +45,7 @@ public class Nuker {
     private boolean particleSpawned;
     private final List<BrokenBlock> brokenBlocks = new ArrayList<>();
     private Vec3 particlePosition;
+    private Vec3 cachedEyes;
 
 
     @SubscribeEvent
@@ -230,7 +230,7 @@ public class Nuker {
         }*/
 
         // Render fading boxes for broken blocks
-        long currentTime = System.currentTimeMillis();
+        /*long currentTime = System.currentTimeMillis();
         brokenBlocks.removeIf(brokenBlock -> currentTime - brokenBlock.time > NukerSliderOptions.nukerFadeTime);
         for (BrokenBlock brokenBlock : brokenBlocks) {
             long timeSinceBroken = currentTime - brokenBlock.time;
@@ -246,7 +246,7 @@ public class Nuker {
                 );
                 RenderUtils.renderBoundingBox(blockAABB, brokenBlock.color, opacity);
             }
-        }
+        }*/
 
         if (NukerBooleanOptions.preview) {
             RenderUtils.renderEspBlocks(blocksInRange);
@@ -293,12 +293,35 @@ public class Nuker {
                         Math.abs(y - (current.getY() + 0.5)) < 0.7 &&
                         Math.abs(z - (current.getZ() + 0.5)) < 0.7) {
 
+
                     // Get player eye position
                     Vec3 eyes = GumTuneClient.mc.thePlayer.getPositionEyes(1f);
+                    cachedEyes = eyes;
                     // Create vector for particle position
                     Vec3 particlePos = new Vec3(x, y, z);
-                    Vec3 blockCenter = new Vec3(current.getX() + 0.5, current.getY() + 0.5, current.getZ() + 0.5);
-                    if (isPositionBetween(particlePos, eyes, blockCenter, 0.2)) {
+                    particlePosition = particlePos;
+                    
+                    ArrayList<Vec3> points = new ArrayList<>();
+                    //add the corner points of the block
+                    points.add(new Vec3(current.getX(), current.getY(), current.getZ()));
+                    points.add(new Vec3(current.getX(), current.getY() + 1, current.getZ()));
+                    points.add(new Vec3(current.getX() + 1, current.getY(), current.getZ()));
+                    points.add(new Vec3(current.getX() + 1, current.getY() + 1, current.getZ()));
+                    points.add(new Vec3(current.getX() + 1, current.getY() + 1, current.getZ() + 1));
+                    points.add(new Vec3(current.getX(), current.getY() + 1, current.getZ() + 1));
+                    points.add(new Vec3(current.getX(), current.getY(), current.getZ() + 1));
+                    points.add(new Vec3(current.getX() + 1, current.getY(), current.getZ() + 1));
+                    //ray trace all points and remove the ones that are not in sight
+                    for (int i = 0; i < points.size(); i++) {
+                        Vec3 point = points.get(i);
+                        if (GumTuneClient.mc.theWorld.rayTraceBlocks(eyes, point) != null) {
+                            points.remove(i);
+                            i--;
+                        }
+                    }
+                    points.add(eyes);
+                    
+                    if (BlockUtils.isPointInVolume(particlePos, points)) {
                         particleSpawned = true;
                         System.out.println("particle spawned look");
                         RotationUtils.serverSmoothLook(RotationUtils.getRotation(particlePos), 100);
@@ -308,6 +331,8 @@ public class Nuker {
         }
     }
 
+    
+    
     private void mineBlock(BlockPos blockPos) {
         if (PowderChestSolver.particle == null) {
             System.out.println("mining look");

@@ -9,6 +9,7 @@ import rosegold.gumtuneclient.GumTuneClient;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Predicate;
 
@@ -179,6 +180,118 @@ public class BlockUtils {
 
         return points;
     }
+    
+    // getViableOutlinePointsOnBlock
+    public static ArrayList<Vec3> getViableOutlinePointsOnBlock(BlockPos blockPos, EnumFacing enumFacing, double range) {
+        return getViableOutlinePointsOnBlock(blockPos, enumFacing, range, false, false);
+    }
+
+    public static ArrayList<Vec3> getViableOutlinePointsOnBlock(BlockPos blockPos, EnumFacing enumFacing, double range, boolean fullBlocks, boolean sneak) {
+        ArrayList<Vec3> points = new ArrayList<>();
+        ArrayList<Vec3> outlinePoints = getOutlinePointsOnBlock(blockPos, enumFacing);
+
+        Vec3 playerPosition = new Vec3(GumTuneClient.mc.thePlayer.posX, GumTuneClient.mc.thePlayer.posY + (sneak ? 1.54D : 1.62D), GumTuneClient.mc.thePlayer.posZ);
+
+        BlockUtils.blockPosConcurrentLinkedQueue.clear();
+
+        for (Vec3 point : outlinePoints) {
+            MovingObjectPosition mop = rayTraceBlocks(playerPosition, point, false, false, false, x -> false, false, fullBlocks);
+
+            if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+                if (mop.getBlockPos().equals(blockPos) && point.distanceTo(playerPosition) < range) {
+                    points.add(point);
+                }
+            }
+        }
+
+        return points;
+    }
+
+    private static ArrayList<Vec3> getOutlinePointsOnBlock(BlockPos bp, EnumFacing enumFacing) {
+        ArrayList<Vec3> points = new ArrayList<>();
+
+        // Define the 12 edges of a cube
+        float[][][] edges = {
+                // Horizontal edges at bottom face
+                {{0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}},
+                {{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}},
+                {{1.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}},
+                {{0.0f, 0.0f, 1.0f}, {1.0f, 0.0f, 1.0f}},
+
+                // Horizontal edges at top face
+                {{0.0f, 1.0f, 0.0f}, {1.0f, 1.0f, 0.0f}},
+                {{0.0f, 1.0f, 0.0f}, {0.0f, 1.0f, 1.0f}},
+                {{1.0f, 1.0f, 0.0f}, {1.0f, 1.0f, 1.0f}},
+                {{0.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}},
+
+                // Vertical edges
+                {{0.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},
+                {{1.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 0.0f}},
+                {{0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 1.0f}},
+                {{1.0f, 0.0f, 1.0f}, {1.0f, 1.0f, 1.0f}}
+        };
+
+        // If a specific face is requested, only use edges on that face
+        if (enumFacing != null) {
+            for (float[][] edge : edges) {
+                boolean isOnFace = false;
+
+                switch (enumFacing) {
+                    case DOWN:
+                        isOnFace = edge[0][1] == 0.0f || edge[1][1] == 0.0f;
+                        break;
+                    case UP:
+                        isOnFace = edge[0][1] == 1.0f || edge[1][1] == 1.0f;
+                        break;
+                    case NORTH:
+                        isOnFace = edge[0][2] == 0.0f || edge[1][2] == 0.0f;
+                        break;
+                    case SOUTH:
+                        isOnFace = edge[0][2] == 1.0f || edge[1][2] == 1.0f;
+                        break;
+                    case WEST:
+                        isOnFace = edge[0][0] == 0.0f || edge[1][0] == 0.0f;
+                        break;
+                    case EAST:
+                        isOnFace = edge[0][0] == 1.0f || edge[1][0] == 1.0f;
+                        break;
+                }
+
+                if (isOnFace) {
+                    generatePointsOnEdge(points, bp, edge[0], edge[1]);
+                }
+            }
+        } else {
+            // If no specific face, use all edges
+            for (float[][] edge : edges) {
+                generatePointsOnEdge(points, bp, edge[0], edge[1]);
+            }
+        }
+
+        return points;
+    }
+
+    private static void generatePointsOnEdge(ArrayList<Vec3> points, BlockPos bp, float[] start, float[] end) {
+        // Generate multiple points along the edge
+        for (int i = 0; i <= 10; i++) {
+            float progress = i / 10.0f;
+            float x = start[0] + (end[0] - start[0]) * progress;
+            float y = start[1] + (end[1] - start[1]) * progress;
+            float z = start[2] + (end[2] - start[2]) * progress;
+
+            // Add slight randomization for more natural targeting
+            if (i > 0 && i < 10) {
+                float offset = 0.01f * RandomUtils.randBetween(-1f, 1f);
+                // Only add offset to dimensions that aren't changing along this edge
+                if (start[0] == end[0]) x += offset;
+                if (start[1] == end[1]) y += offset;
+                if (start[2] == end[2]) z += offset;
+            }
+
+            points.add(new Vec3(bp).addVector(x, y, z));
+        }
+    }
+    
 
     public static MovingObjectPosition rayTraceBlocks(Vec3 vec31, Vec3 vec32, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock, Predicate<? super BlockPos> predicate) {
         return rayTraceBlocks(vec31, vec32, stopOnLiquid, ignoreBlockWithoutBoundingBox, returnLastUncollidableBlock, predicate, false, false);
@@ -511,4 +624,47 @@ public class BlockUtils {
         if (GumTuneClient.mc.theWorld == null) return null;
         return GumTuneClient.mc.theWorld.getBlockState(blockPos);
     }
+
+    /**
+     * Checks if a point is inside a 3D volume defined by a list of Vec3 coordinates
+     *
+     * @param point The point to check
+     * @param volume List of Vec3 coordinates defining the volume (vertices of a polyhedron)
+     * @return true if the point is inside the volume
+     */
+    public static boolean isPointInVolume(Vec3 point, List<Vec3> volume) {
+        if (volume == null || volume.size() < 4) {
+            return false;
+        }
+
+        double totalAngle = 0.0;
+
+        for (int i = 0; i < volume.size(); i++) {
+            Vec3 v1 = volume.get(i).subtract(point);
+            Vec3 v2 = volume.get((i + 1) % volume.size()).subtract(point);
+            Vec3 v3 = volume.get((i + 2) % volume.size()).subtract(point);
+
+            double angle = angleBetweenVectors(v1, v2, v3);
+            totalAngle += angle;
+        }
+
+        return Math.abs(totalAngle) > Math.PI;
+    }
+
+    /**
+     * Calculates the angle between three vectors
+     *
+     * @param v1 First vector
+     * @param v2 Second vector
+     * @param v3 Third vector
+     * @return The angle between the vectors
+     */
+    public static double angleBetweenVectors(Vec3 v1, Vec3 v2, Vec3 v3) {
+        Vec3 crossProduct = v1.crossProduct(v2);
+        double dotProduct = v1.dotProduct(v2);
+        double magnitude = v1.lengthVector() * v2.lengthVector();
+
+        return Math.atan2(crossProduct.lengthVector(), dotProduct / magnitude);
+    }
+    
 }
