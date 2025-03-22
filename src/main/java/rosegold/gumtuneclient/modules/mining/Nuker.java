@@ -229,30 +229,32 @@ public class Nuker {
         }
     }
 
-//    @SubscribeEvent
-//    public void onParticelPacket(PacketReceivedEvent packet) {
-//        if (!isEnabled() || current == null) return;
-//        if (packet.packet instanceof S2APacketParticles) {
-//            S2APacketParticles packetParticles = (S2APacketParticles) packet.packet;
-//            if (!particleSpawned && packetParticles.getParticleType() == EnumParticleTypes.CRIT) {
-//                double x = Math.floor(packetParticles.getXCoordinate());
-//                double y = Math.floor(packetParticles.getYCoordinate());
-//                double z = Math.floor(packetParticles.getZCoordinate());
-//                if (Math.abs(x - (current.getX() + 0.5)) < 0.7 && Math.abs(y - (current.getY() + 0.5)) < 0.7 && Math.abs(z - (current.getZ() + 0.5)) < 0.7) {
-//                    Vec3 eyes = GumTuneClient.mc.thePlayer.getPositionEyes(1f);
-//                    Vec3 particle = new Vec3(x + (x - eyes.lengthVector()), y + (y - eyes.lengthVector()), z + (z - eyes.lengthVector()));
-//                    MovingObjectPosition result = BlockUtils.rayTraceBlocks(eyes, particle,false, true,false,b->false,false);
-//                    if (result.getBlockPos().equals(current)) {
-//                        particleSpawned = true;
-//                        RotationUtils.serverSmoothLook(RotationUtils.getRotation(new Vec3(x, y, z)), GumTuneClientConfig.nukerRotationSpeed);
-//                    }
-//                }
-//            }
-//        }
-//    }
+    @SubscribeEvent
+    public void onParticelPacket(PacketReceivedEvent event) {
+        if (!isEnabled() || current == null || !NukerBooleanOptions.precisionMining) return;
+        if (event.packet instanceof S2APacketParticles) {
+            S2APacketParticles packet = (S2APacketParticles) event.packet;
+            if (packet.getParticleType().equals(EnumParticleTypes.CRIT)) {
+                double x = Math.floor(packet.getXCoordinate());
+                double y = Math.floor(packet.getYCoordinate());
+                double z = Math.floor(packet.getZCoordinate());
+                if (Math.abs(x - (current.getX() + 0.5)) < 0.7 && Math.abs(y - (current.getY() + 0.5)) < 0.7 && Math.abs(z - (current.getZ() + 0.5)) < 0.7) {
+                    Vec3 eyes = GumTuneClient.mc.thePlayer.getPositionEyes(1f);
+                    Vec3 particle = new Vec3(x + (x - eyes.lengthVector()), y + (y - eyes.lengthVector()), z + (z - eyes.lengthVector()));
+                    MovingObjectPosition result = BlockUtils.rayTraceBlocks(eyes, particle, false, true, false, b -> false, false);
+                    if (result.getBlockPos().equals(current)) {
+                        particleSpawned = true;
+                        System.out.println("particle spawned look");
+                        RotationUtils.serverSmoothLook(RotationUtils.getRotation(new Vec3(x, y, z)), GumTuneClientConfig.nukerRotationSpeed);
+                    }
+                }
+            }
+        }
+    }
 
     private void mineBlock(BlockPos blockPos) {
         if (PowderChestSolver.particle == null) {
+            System.out.println("mining look");
             RotationUtils.serverSmoothLook(RotationUtils.getRotation(blockPos), GumTuneClientConfig.nukerRotationSpeed);
         }
         breakBlock(blockPos);
@@ -262,6 +264,7 @@ public class Nuker {
 
     private void pinglessMineBlock(BlockPos blockPos) {
         if (PowderChestSolver.particle == null) {
+            System.out.println("pingless mining look");
             RotationUtils.serverSmoothLook(RotationUtils.getRotation(blockPos), GumTuneClientConfig.nukerRotationSpeed);
         }
         GumTuneClient.mc.thePlayer.swingItem();

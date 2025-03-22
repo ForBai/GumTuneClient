@@ -32,4 +32,10 @@ public class NukerBooleanOptions {
             description = "Only mine blocks that are visible"
     )
     public static boolean onlyVisibleBlocks = false;
+    
+    @Switch(
+            name = "Precision Mining",
+            description = "Automaticly Looks at the particles spawned by precision mining"
+    )
+    public static boolean precisionMining = false;
 }
