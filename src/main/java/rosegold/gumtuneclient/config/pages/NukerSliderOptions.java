@@ -70,4 +70,11 @@ public class NukerSliderOptions {
             min = 0f, max = 10000
     )
     public static int nukerStuckTimer = 4000;
+
+    @Slider(
+            name = "Fade Time",
+            description = "Time in milliseconds for the broken block box to fade",
+            min = 0, max = 2000
+    )
+    public static int nukerFadeTime = 500;
 }

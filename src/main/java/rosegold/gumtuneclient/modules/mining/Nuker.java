@@ -27,9 +27,11 @@ import rosegold.gumtuneclient.events.SecondEvent;
 import rosegold.gumtuneclient.modules.macro.GemstoneMacro;
 import rosegold.gumtuneclient.modules.render.ESPs;
 import rosegold.gumtuneclient.utils.*;
+import rosegold.gumtuneclient.utils.objects.BrokenBlock;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Nuker {
     public static boolean enabled;
@@ -41,6 +43,7 @@ public class Nuker {
     private BlockPos current;
     private final ArrayList<BlockPos> blocksInRange = new ArrayList<>();
     private boolean particleSpawned;
+    private final List<BrokenBlock> brokenBlocks = new ArrayList<>();
 
     @SubscribeEvent
     public void onKey(InputEvent.KeyInputEvent event) {
@@ -202,11 +205,49 @@ public class Nuker {
     @SubscribeEvent
     public void onRender(RenderWorldLastEvent event) {
         if (!isEnabled()) return;
+
+        // Render the target block in gray
         RenderUtils.renderEspBox(blockPos, event.partialTicks, Color.GRAY.getRGB());
-        RenderUtils.renderEspBox(current, event.partialTicks, Color.BLUE.getRGB());
-        if (NukerBooleanOptions.preview)
-//            blocksInRange.stream().filter(b -> GumTuneClient.mc.theWorld.getBlockState(b).getBlock() != Blocks.air).forEach(bp -> RenderUtils.renderEspBox(bp, event.partialTicks, Color.CYAN.getRGB(), 0.1f));
+
+        // Render the currently mining block with expanding effect
+        if (current != null) {
+            float breakProgress = getBlockBreakingProgress(current);
+            double expansion = 0.5 * breakProgress; // Expands to half the block size
+
+            AxisAlignedBB blockAABB = new AxisAlignedBB(
+                    current.getX() + 0.5 - expansion,
+                    current.getY() + 0.5 - expansion,
+                    current.getZ() + 0.5 - expansion,
+                    current.getX() + 0.5 + expansion,
+                    current.getY() + 0.5 + expansion,
+                    current.getZ() + 0.5 + expansion
+            );
+
+            RenderUtils.renderBoundingBox(blockAABB, Color.BLUE.getRGB(), 0.5f);
+        }
+
+        // Render fading boxes for broken blocks
+        long currentTime = System.currentTimeMillis();
+        brokenBlocks.removeIf(brokenBlock -> currentTime - brokenBlock.time > NukerSliderOptions.nukerFadeTime);
+        for (BrokenBlock brokenBlock : brokenBlocks) {
+            long timeSinceBroken = currentTime - brokenBlock.time;
+            float opacity = 1.0f - (float) timeSinceBroken / NukerSliderOptions.nukerFadeTime;
+            if (opacity > 0) {
+                AxisAlignedBB blockAABB = new AxisAlignedBB(
+                        brokenBlock.pos.getX(),
+                        brokenBlock.pos.getY(),
+                        brokenBlock.pos.getZ(),
+                        brokenBlock.pos.getX() + 1,
+                        brokenBlock.pos.getY() + 1,
+                        brokenBlock.pos.getZ() + 1
+                );
+                RenderUtils.renderBoundingBox(blockAABB, brokenBlock.color, opacity);
+            }
+        }
+
+        if (NukerBooleanOptions.preview) {
             RenderUtils.renderEspBlocks(blocksInRange);
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.NORMAL)
@@ -235,17 +276,26 @@ public class Nuker {
         if (event.packet instanceof S2APacketParticles) {
             S2APacketParticles packet = (S2APacketParticles) event.packet;
             if (packet.getParticleType().equals(EnumParticleTypes.CRIT)) {
-                double x = Math.floor(packet.getXCoordinate());
-                double y = Math.floor(packet.getYCoordinate());
-                double z = Math.floor(packet.getZCoordinate());
-                if (Math.abs(x - (current.getX() + 0.5)) < 0.7 && Math.abs(y - (current.getY() + 0.5)) < 0.7 && Math.abs(z - (current.getZ() + 0.5)) < 0.7) {
+                double x = packet.getXCoordinate();
+                double y = packet.getYCoordinate();
+                double z = packet.getZCoordinate();
+
+                // Check if particle is close to the current block
+                if (Math.abs(x - (current.getX() + 0.5)) < 0.7 &&
+                        Math.abs(y - (current.getY() + 0.5)) < 0.7 &&
+                        Math.abs(z - (current.getZ() + 0.5)) < 0.7) {
+
+                    // Get player eye position
                     Vec3 eyes = GumTuneClient.mc.thePlayer.getPositionEyes(1f);
-                    Vec3 particle = new Vec3(x + (x - eyes.lengthVector()), y + (y - eyes.lengthVector()), z + (z - eyes.lengthVector()));
-                    MovingObjectPosition result = BlockUtils.rayTraceBlocks(eyes, particle, false, true, false, b -> false, false);
-                    if (result.getBlockPos().equals(current)) {
+                    // Create vector for particle position
+                    Vec3 particlePos = new Vec3(x, y, z);
+
+                    // Check if there's line of sight between player and particle
+                    MovingObjectPosition result = BlockUtils.rayTraceBlocks(eyes, particlePos, false, true, false, b -> false, false);
+                    if (result != null && result.getBlockPos().equals(current)) {
                         particleSpawned = true;
                         System.out.println("particle spawned look");
-                        RotationUtils.serverSmoothLook(RotationUtils.getRotation(new Vec3(x, y, z)), GumTuneClientConfig.nukerRotationSpeed);
+                        RotationUtils.serverSmoothLook(RotationUtils.getRotation(particlePos), GumTuneClientConfig.nukerRotationSpeed);
                     }
                 }
             }
@@ -260,6 +310,7 @@ public class Nuker {
         breakBlock(blockPos);
         stuckTimestamp = System.currentTimeMillis();
         current = blockPos;
+        brokenBlocks.add(new BrokenBlock(blockPos, System.currentTimeMillis(), Color.BLUE.getRGB()));
     }
 
     private void pinglessMineBlock(BlockPos blockPos) {
@@ -271,6 +322,7 @@ public class Nuker {
         stuckTimestamp = System.currentTimeMillis();
         breakBlock(blockPos);
         broken.add(blockPos);
+        brokenBlocks.add(new BrokenBlock(blockPos, System.currentTimeMillis(), Color.green.getRGB()));
     }
 
     private void breakBlock(BlockPos blockPos) {
@@ -620,6 +672,17 @@ public class Nuker {
 
         return NukerBlockFilter.nukerBlockFilterNetherrack &&
                 block == Blocks.netherrack;
+    }
+
+    private float getBlockBreakingProgress(BlockPos blockPos) {
+        if (GumTuneClient.mc.playerController == null) return 0.0f;
+        if (current == null) return 0.0f;
+        if (!current.equals(blockPos)) return 0.0f;
+        Object damage = ReflectionUtils.field(GumTuneClient.mc.playerController, "curBlockDamageMP");
+        if (damage instanceof Float) {
+            return (Float) damage;
+        }
+        return 0.0f;
     }
 
     private boolean isSlow(IBlockState blockState) {
