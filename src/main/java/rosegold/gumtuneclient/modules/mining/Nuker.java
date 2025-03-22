@@ -253,9 +253,9 @@ public class Nuker {
         }
 
         // Render small white box at particle location
-        if (particlePosition != null) {
+        /*if (particlePosition != null) {
             RenderUtils.renderSmallBox(particlePosition, Color.WHITE.getRGB());
-        }
+        }*/
     }
 
     @SubscribeEvent(priority = EventPriority.NORMAL)
@@ -300,7 +300,7 @@ public class Nuker {
                     // Create vector for particle position
                     Vec3 particlePos = new Vec3(x, y, z);
                     particlePosition = particlePos;
-                    
+
                     ArrayList<Vec3> points = new ArrayList<>();
                     //add the corner points of the block
                     points.add(new Vec3(current.getX(), current.getY(), current.getZ()));
@@ -320,22 +320,19 @@ public class Nuker {
                         }
                     }
                     points.add(eyes);
-                    
+
                     if (BlockUtils.isPointInVolume(particlePos, points)) {
                         particleSpawned = true;
-                        System.out.println("particle spawned look");
-                        RotationUtils.serverSmoothLook(RotationUtils.getRotation(particlePos), 100);
+                        RotationUtils.serverSmoothLook(RotationUtils.getRotation(particlePos), NukerSliderOptions.nukerRotationSpeed);
                     }
                 }
             }
         }
     }
 
-    
-    
+
     private void mineBlock(BlockPos blockPos) {
         if (PowderChestSolver.particle == null) {
-            System.out.println("mining look");
             RotationUtils.serverSmoothLook(RotationUtils.getRotation(blockPos), GumTuneClientConfig.nukerRotationSpeed);
         }
         breakBlock(blockPos);

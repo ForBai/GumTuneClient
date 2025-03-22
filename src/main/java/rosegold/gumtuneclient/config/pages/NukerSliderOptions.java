@@ -77,4 +77,11 @@ public class NukerSliderOptions {
             min = 0, max = 2000
     )
     public static int nukerFadeTime = 500;
+    
+    @Slider(
+            name = "Precision Mining Aim Time",
+            description = "Time to look at the Precision Mining particle before breaking the block",
+            min = 50, max = 500
+    )
+    public static int precisionMiningAimTime = 200;
 }

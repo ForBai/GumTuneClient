@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.*;
-import net.minecraft.world.World;
 import rosegold.gumtuneclient.GumTuneClient;
 
 import java.util.ArrayList;
@@ -180,7 +179,7 @@ public class BlockUtils {
 
         return points;
     }
-    
+
     // getViableOutlinePointsOnBlock
     public static ArrayList<Vec3> getViableOutlinePointsOnBlock(BlockPos blockPos, EnumFacing enumFacing, double range) {
         return getViableOutlinePointsOnBlock(blockPos, enumFacing, range, false, false);
@@ -291,7 +290,7 @@ public class BlockUtils {
             points.add(new Vec3(bp).addVector(x, y, z));
         }
     }
-    
+
 
     public static MovingObjectPosition rayTraceBlocks(Vec3 vec31, Vec3 vec32, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock, Predicate<? super BlockPos> predicate) {
         return rayTraceBlocks(vec31, vec32, stopOnLiquid, ignoreBlockWithoutBoundingBox, returnLastUncollidableBlock, predicate, false, false);
@@ -416,8 +415,10 @@ public class BlockUtils {
     public static ArrayList<BlockPos> rayTraceBlockList(Vec3 from, Vec3 goal, boolean ignoreBlockWithoutBoundingBox, Predicate<? super BlockPos> predicate, boolean fullBlocks) {
         ArrayList<BlockPos> blockPosArrayList = new ArrayList<>();
 
-        if (Double.isNaN(from.xCoord) || Double.isNaN(from.yCoord) || Double.isNaN(from.zCoord)) return blockPosArrayList;
-        if (Double.isNaN(goal.xCoord) || Double.isNaN(goal.yCoord) || Double.isNaN(goal.zCoord)) return blockPosArrayList;
+        if (Double.isNaN(from.xCoord) || Double.isNaN(from.yCoord) || Double.isNaN(from.zCoord))
+            return blockPosArrayList;
+        if (Double.isNaN(goal.xCoord) || Double.isNaN(goal.yCoord) || Double.isNaN(goal.zCoord))
+            return blockPosArrayList;
 
         int xGoal = MathHelper.floor_double(goal.xCoord);
         int yGoal = MathHelper.floor_double(goal.yCoord);
@@ -628,7 +629,7 @@ public class BlockUtils {
     /**
      * Checks if a point is inside a 3D volume defined by a list of Vec3 coordinates
      *
-     * @param point The point to check
+     * @param point  The point to check
      * @param volume List of Vec3 coordinates defining the volume (vertices of a polyhedron)
      * @return true if the point is inside the volume
      */
@@ -666,5 +667,5 @@ public class BlockUtils {
 
         return Math.atan2(crossProduct.lengthVector(), dotProduct / magnitude);
     }
-    
+
 }
