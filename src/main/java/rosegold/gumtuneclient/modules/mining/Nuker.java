@@ -44,6 +44,8 @@ public class Nuker {
     private final ArrayList<BlockPos> blocksInRange = new ArrayList<>();
     private boolean particleSpawned;
     private final List<BrokenBlock> brokenBlocks = new ArrayList<>();
+    private Vec3 particlePosition;
+
 
     @SubscribeEvent
     public void onKey(InputEvent.KeyInputEvent event) {
@@ -210,10 +212,10 @@ public class Nuker {
         RenderUtils.renderEspBox(blockPos, event.partialTicks, Color.GRAY.getRGB());
 
         // Render the currently mining block with expanding effect
-        if (current != null) {
+        /*if (current != null) {
             float breakProgress = getBlockBreakingProgress(current);
             double expansion = 0.5 * breakProgress; // Expands to half the block size
-
+            System.out.println(breakProgress);
             AxisAlignedBB blockAABB = new AxisAlignedBB(
                     current.getX() + 0.5 - expansion,
                     current.getY() + 0.5 - expansion,
@@ -224,7 +226,7 @@ public class Nuker {
             );
 
             RenderUtils.renderBoundingBox(blockAABB, Color.BLUE.getRGB(), 0.5f);
-        }
+        }*/
 
         // Render fading boxes for broken blocks
         long currentTime = System.currentTimeMillis();
@@ -247,6 +249,11 @@ public class Nuker {
 
         if (NukerBooleanOptions.preview) {
             RenderUtils.renderEspBlocks(blocksInRange);
+        }
+
+        // Render small white box at particle location
+        if (particlePosition != null) {
+            RenderUtils.renderSmallBox(particlePosition, Color.WHITE.getRGB());
         }
     }
 
@@ -295,7 +302,7 @@ public class Nuker {
                     if (result != null && result.getBlockPos().equals(current)) {
                         particleSpawned = true;
                         System.out.println("particle spawned look");
-                        RotationUtils.serverSmoothLook(RotationUtils.getRotation(particlePos), GumTuneClientConfig.nukerRotationSpeed);
+                        RotationUtils.serverSmoothLook(RotationUtils.getRotation(particlePos), 100);
                     }
                 }
             }
@@ -315,7 +322,6 @@ public class Nuker {
 
     private void pinglessMineBlock(BlockPos blockPos) {
         if (PowderChestSolver.particle == null) {
-            System.out.println("pingless mining look");
             RotationUtils.serverSmoothLook(RotationUtils.getRotation(blockPos), GumTuneClientConfig.nukerRotationSpeed);
         }
         GumTuneClient.mc.thePlayer.swingItem();
