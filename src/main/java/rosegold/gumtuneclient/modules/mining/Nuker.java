@@ -323,7 +323,7 @@ public class Nuker {
 
                     if (BlockUtils.isPointInVolume(particlePos, points)) {
                         particleSpawned = true;
-                        RotationUtils.serverSmoothLook(RotationUtils.getRotation(particlePos), NukerSliderOptions.nukerRotationSpeed);
+                        RotationUtils.serverSmoothLook(RotationUtils.getRotation(particlePos), NukerSliderOptions.precisionMiningAimTime);
                     }
                 }
             }
