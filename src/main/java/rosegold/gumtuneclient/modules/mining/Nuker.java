@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
 import rosegold.gumtuneclient.GumTuneClient;
+import rosegold.gumtuneclient.command.MainCommand;
 import rosegold.gumtuneclient.config.GumTuneClientConfig;
 import rosegold.gumtuneclient.config.pages.NukerBlockFilter;
 import rosegold.gumtuneclient.config.pages.NukerBooleanOptions;
@@ -296,10 +297,8 @@ public class Nuker {
                     Vec3 eyes = GumTuneClient.mc.thePlayer.getPositionEyes(1f);
                     // Create vector for particle position
                     Vec3 particlePos = new Vec3(x, y, z);
-
-                    // Check if there's line of sight between player and particle
-                    MovingObjectPosition result = BlockUtils.rayTraceBlocks(eyes, particlePos, false, true, false, b -> false, false);
-                    if (result != null && result.getBlockPos().equals(current)) {
+                    Vec3 blockCenter = new Vec3(current.getX() + 0.5, current.getY() + 0.5, current.getZ() + 0.5);
+                    if (isPositionBetween(particlePos, eyes, blockCenter, 0.2)) {
                         particleSpawned = true;
                         System.out.println("particle spawned look");
                         RotationUtils.serverSmoothLook(RotationUtils.getRotation(particlePos), 100);
@@ -709,5 +708,24 @@ public class Nuker {
 
     private IBlockState getBlockState(BlockPos blockPos) {
         return GumTuneClient.mc.theWorld.getBlockState(blockPos);
+    }
+
+    private boolean isPositionBetween(Vec3 position, Vec3 pos1, Vec3 pos2, double tolerance) {
+        // If pos1 and pos2 are the same, check if the position is within the tolerance
+        if (pos1.equals(pos2)) {
+            return position.distanceTo(pos1) <= tolerance;
+        }
+
+        // Calculate the distance from the point to the line
+        double distance = position.distanceTo(getClosestPointOnLine(position, pos1, pos2));
+
+        return distance <= tolerance;
+    }
+
+    private Vec3 getClosestPointOnLine(Vec3 point, Vec3 lineStart, Vec3 lineEnd) {
+        Vec3 lineDirection = lineEnd.subtract(lineStart).normalize();
+        Vec3 pointToLineStart = point.subtract(lineStart);
+        double dotProduct = pointToLineStart.dotProduct(lineDirection);
+        return lineStart.add(new Vec3(lineDirection.xCoord * dotProduct, lineDirection.yCoord * dotProduct, lineDirection.zCoord * dotProduct));
     }
 }
