@@ -29,10 +29,14 @@ import java.awt.*;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class WorldScanner {
+
+    private static final ExecutorService scanExecutor = Executors.newSingleThreadExecutor();
 
     public static class World {
         private final ConcurrentHashMap<String, BlockPos> crystalWaypoints;
@@ -142,7 +146,10 @@ public class WorldScanner {
         World currentWorld = worlds.get(LocationUtils.serverName);
         if (currentWorld == null) return;
         if (!currentWorld.isChunkCached(event.getChunk())) {
-            handleChunkLoad(event.getChunk(), currentWorld);
+            final Chunk chunk = event.getChunk();
+            scanExecutor.submit(() -> {
+                handleChunkLoad(chunk, currentWorld);
+            });
             currentWorld.cacheChunk(event.getChunk());
         }
     }
@@ -161,15 +168,17 @@ public class WorldScanner {
         }
         if (cooldown == 0) {
             if (initialScan) return;
+            initialScan = true; // Mark scan as started
             World currentWorld = worlds.get(LocationUtils.serverName);
             if (currentWorld == null) return;
-            initialScan = true;
             Object object = ReflectionUtils.field(GumTuneClient.mc.theWorld.getChunkProvider(), "field_73237_c");
             if (object instanceof List) {
                 ModUtils.sendMessage("Running initial full-scan");
                 for (Chunk chunk : (List<Chunk>) object) {
                     currentWorld.cacheChunk(chunk);
-                    handleChunkLoad(chunk, currentWorld);
+                    scanExecutor.submit(() -> {
+                        handleChunkLoad(chunk, currentWorld);
+                    });
                 }
             }
         }
@@ -277,7 +286,6 @@ public class WorldScanner {
     }
 
     public static void handleChunkLoad(Chunk chunk, World currentWorld) {
-//        Multithreading.runAsync(() -> {
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 170; y++) {
                 for (int z = 0; z < 16; z++) {
@@ -357,7 +365,6 @@ public class WorldScanner {
                 }
             }
         }
-//        });
     }
 
     private static Color colorCodeToColor(String text) {
