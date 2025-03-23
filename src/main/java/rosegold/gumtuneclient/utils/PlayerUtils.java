@@ -20,7 +20,7 @@ public class PlayerUtils {
         if (message.contains(":") || message.contains(">")) return;
         if (message.startsWith("You used your Mining Speed Boost Pickaxe Ability!")) {
             pickaxeAbilityReady = false;
-        } else if (message.equals("Mining Speed Boost is now available!")) {
+        } else if (message.equals("Mining Speed Boost is now available!") || message.equals("Maniac Miner is now available!")) {
             Multithreading.schedule(() -> pickaxeAbilityReady = true, random.nextInt(500) + 500, TimeUnit.MILLISECONDS);
         }
     }
