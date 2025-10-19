@@ -74,6 +74,7 @@ public class GumTuneClientConfig extends Config {
     private transient static final String CUSTOM_BLOCK_ESP = "Custom Block ESP";
     private transient static final String OLD_MINECRAFT_LOGO = "Old Minecraft Logo";
     private transient static final String GEMSTONE_SACK_COMPACTOR = "Gemstone Sack Compactor";
+    private transient static final String COAL_VEIN_ESP = "Coal Vein ESP";
 
     @Switch(
             name = "Enabled",
@@ -551,6 +552,43 @@ public class GumTuneClientConfig extends Config {
             subcategory = ESPS
     )
     public static boolean enderNodeESP = false;
+
+    @Switch(
+            name = "Coal Vein ESP",
+            category = RENDER,
+            subcategory = ESPS
+    )
+    public static boolean coalVeinESP = false;
+
+    @Slider(
+            name = "Coal Vein Scan Radius",
+            category = RENDER,
+            subcategory = ESPS,
+            min = 16, max = 128
+    )
+    public static int coalVeinScanRadius = 64;
+
+    @Slider(
+            name = "Coal Vein Min Size",
+            category = RENDER,
+            subcategory = ESPS,
+            min = 2, max = 20
+    )
+    public static int coalVeinMinSize = 7;
+
+    @Color(
+            name = "Coal Vein Tracer Color",
+            category = RENDER,
+            subcategory = ESPS
+    )
+    public static OneColor coalVeinTracerColor = new OneColor(java.awt.Color.ORANGE.getRGB());
+
+    @Color(
+            name = "Coal Vein Highlight Color",
+            category = RENDER,
+            subcategory = ESPS
+    )
+    public static OneColor coalVeinHighlightColor = new OneColor(java.awt.Color.BLACK.getRGB());
 
     @Page(
             name = "Rift ESPs",

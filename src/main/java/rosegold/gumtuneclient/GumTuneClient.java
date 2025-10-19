@@ -36,6 +36,7 @@ import rosegold.gumtuneclient.modules.mining.PowderChestSolver;
 import rosegold.gumtuneclient.modules.player.*;
 import rosegold.gumtuneclient.modules.qol.Trackers;
 import rosegold.gumtuneclient.modules.render.CustomBlockESP;
+import rosegold.gumtuneclient.modules.render.CoalVeinESP;
 import rosegold.gumtuneclient.modules.render.ESPs;
 import rosegold.gumtuneclient.modules.render.RevealHiddenMobs;
 import rosegold.gumtuneclient.modules.singleplayer.skyblockitems.AspectOfTheVoid;
@@ -105,7 +106,8 @@ public class GumTuneClient {
                 new MirrorverseHelpers(),
                 new CustomBlockESP(),
                 new AntiScribe(),
-                new GemstoneSackCompactor()
+                new GemstoneSackCompactor(),
+                new CoalVeinESP()
         );
     }
 
