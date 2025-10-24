@@ -238,35 +238,57 @@ public class RotationUtils {
         endTime = System.currentTimeMillis() + time;
     }
 
+    /**
+     * Update loop for the server-rotation path that interpolates the player's view from {@code startRot}
+     * to {@code endRot} and then resets the smoothing state when finished.
+     * <p>
+     * While animating, {@link #currentFakeYaw} and {@link #currentFakePitch} are kept in sync with the
+     * values written to {@code mc.thePlayer} so subsequent server-smoothing calls can continue smoothly.
+     * On completion (when current time exceeds {@link #endTime}), we snap to {@code endRot} and call {@link #reset()}.
+     */
     public static void updateServerLookResetting() {
         if (System.currentTimeMillis() <= endTime) {
+            // Interpolate pitch/yaw towards target using the configured easing.
             mc.thePlayer.rotationYaw = interpolate(startRot.getYaw(), endRot.getYaw());
             mc.thePlayer.rotationPitch = interpolate(startRot.getPitch(), endRot.getPitch());
 
+            // Maintain the fake rotation cache used by server smoothing.
             currentFakeYaw = mc.thePlayer.rotationYaw;
             currentFakePitch = mc.thePlayer.rotationPitch;
         } else {
             if (!done) {
+                // Snap to the final rotation once the animation window has elapsed.
                 mc.thePlayer.rotationYaw = endRot.getYaw();
                 mc.thePlayer.rotationPitch = endRot.getPitch();
 
                 currentFakeYaw = mc.thePlayer.rotationYaw;
                 currentFakePitch = mc.thePlayer.rotationPitch;
 
+                // Important difference vs. updateServerLook(): we reset() here.
                 reset();
             }
         }
     }
 
+    /**
+     * Update loop for the server-rotation path that interpolates from {@code startRot} to {@code endRot}
+     * but does NOT call {@link #reset()} after finishing. This allows callers to decide when to clear state.
+     * <p>
+     * The fake rotation cache ({@link #currentFakeYaw}, {@link #currentFakePitch}) is kept in sync while animating
+     * and after snapping to {@code endRot}.
+     */
     public static void updateServerLook() {
         if (System.currentTimeMillis() <= endTime) {
+            // Interpolate pitch/yaw towards target using the configured easing.
             mc.thePlayer.rotationYaw = interpolate(startRot.getYaw(), endRot.getYaw());
             mc.thePlayer.rotationPitch = interpolate(startRot.getPitch(), endRot.getPitch());
 
+            // Maintain the fake rotation cache used by server smoothing.
             currentFakeYaw = mc.thePlayer.rotationYaw;
             currentFakePitch = mc.thePlayer.rotationPitch;
         } else {
             if (!done) {
+                // Snap to the final rotation once the animation window has elapsed.
                 mc.thePlayer.rotationYaw = endRot.getYaw();
                 mc.thePlayer.rotationPitch = endRot.getPitch();
 
@@ -276,11 +298,21 @@ public class RotationUtils {
         }
     }
 
+    /**
+     * Immediately set the player's view to the provided rotation without any interpolation.
+     *
+     * @param rotation absolute rotation (pitch, yaw) to apply to the player
+     */
     public static void look(Rotation rotation) {
         mc.thePlayer.rotationPitch = rotation.pitch;
         mc.thePlayer.rotationYaw = rotation.yaw;
     }
 
+    /**
+     * Reset/clear any active rotation animation state.
+     * Sets {@link #done} to true, clears start/end rotations and timing, and zeros the fake cache
+     * ({@link #currentFakeYaw}, {@link #currentFakePitch}).
+     */
     public static void reset() {
         done = true;
         startRot = null;
@@ -291,14 +323,25 @@ public class RotationUtils {
         currentFakePitch = 0;
     }
 
+    /**
+     * Render-phase interpolation for the client-side "NORMAL" rotation mode.
+     *
+     * <p>When {@link #rotationType} is {@code NORMAL}, this event advances the smooth rotation animation
+     * between {@link #startRot} and {@link #endRot} based on the easing function. Once the time window
+     * has elapsed, it snaps to {@code endRot} and calls {@link #reset()}.</p>
+     *
+     * @param event RenderWorldLastEvent hook provided by Forge
+     */
     @SubscribeEvent
     public void onRenderWorld(RenderWorldLastEvent event) {
         if (rotationType != RotationType.NORMAL) return;
         if (System.currentTimeMillis() <= endTime) {
+            // Apply eased interpolation in render stage to keep visuals smooth.
             mc.thePlayer.rotationPitch = interpolate(startRot.pitch, endRot.pitch);
             mc.thePlayer.rotationYaw = interpolate(startRot.yaw, endRot.yaw);
         } else {
             if (!done) {
+                // Finish the animation and clear state.
                 mc.thePlayer.rotationYaw = endRot.yaw;
                 mc.thePlayer.rotationPitch = endRot.pitch;
 
@@ -307,12 +350,24 @@ public class RotationUtils {
         }
     }
 
+    /**
+     * Capture the server-synchronized rotation values at the beginning of the player's movement update.
+     *
+     * <p>Priority {@link EventPriority#HIGHEST} ensures we observe the original values before other handlers
+     * may modify them for rendering or client-only effects.</p>
+     */
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onUpdatePre(PlayerMoveEvent.Pre pre) {
         serverPitch = mc.thePlayer.rotationPitch;
         serverYaw = mc.thePlayer.rotationYaw;
     }
 
+    /**
+     * Restore the server-synchronized rotation values after the player's movement update.
+     *
+     * <p>Priority {@link EventPriority#LOWEST} ensures this restoration runs after potential temporary
+     * client-side adjustments so the server-facing state remains consistent.</p>
+     */
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onUpdatePost(PlayerMoveEvent.Post post) {
         mc.thePlayer.rotationPitch = serverPitch;
