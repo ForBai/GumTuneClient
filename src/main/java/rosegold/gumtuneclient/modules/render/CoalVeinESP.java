@@ -21,8 +21,41 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class CoalVeinESP {
 
-    private final List<Set<BlockPos>> coalVeins = new CopyOnWriteArrayList<>();
-    private BlockPos closestVein = null;
+    private final List<VeinInfo> coalVeins = new CopyOnWriteArrayList<>();
+    private static final int MAX_HIGHLIGHTED_VEINS = 3;
+
+    private static class VeinInfo {
+        public final Set<BlockPos> blocks;
+        public final BlockPos center;
+        public final double distanceSqToPlayer;
+        public final int lowestY;
+
+        public VeinInfo(Set<BlockPos> blocks, BlockPos playerPos) {
+            this.blocks = blocks;
+            BlockPos sumPos = new BlockPos(0, 0, 0);
+            int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE, minZ = Integer.MAX_VALUE;
+            int maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE, maxZ = Integer.MIN_VALUE;
+
+            for (BlockPos block : blocks) {
+                sumPos = sumPos.add(block);
+                minX = Math.min(minX, block.getX());
+                minY = Math.min(minY, block.getY());
+                minZ = Math.min(minZ, block.getZ());
+                maxX = Math.max(maxX, block.getX());
+                maxY = Math.max(maxY, block.getY());
+                maxZ = Math.max(maxZ, block.getZ());
+            }
+
+            // Calculate center of the vein
+            this.center = new BlockPos(
+                (minX + maxX) / 2,
+                (minY + maxY) / 2,
+                (minZ + maxZ) / 2
+            );
+            this.distanceSqToPlayer = playerPos.distanceSq(this.center);
+            this.lowestY = minY;
+        }
+    }
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
@@ -38,26 +71,26 @@ public class CoalVeinESP {
     @SubscribeEvent
     public void onRenderWorld(RenderWorldLastEvent event) {
         if (!GumTuneClientConfig.coalVeinESP || coalVeins.isEmpty()) return;
+        final BlockPos playerPos = GumTuneClient.mc.thePlayer.getPosition();
+        BlockPos lastPos = playerPos;
 
-        for (Set<BlockPos> vein : coalVeins) {
-            for (BlockPos block : vein) {
+        // Render ESP boxes for the highlighted veins
+        for (int i = 0; i < Math.min(coalVeins.size(), MAX_HIGHLIGHTED_VEINS); i++) {
+            VeinInfo veinInfo = coalVeins.get(i);
+            for (BlockPos block : veinInfo.blocks) {
                 RenderUtils.renderEspBox(block, event.partialTicks, GumTuneClientConfig.coalVeinHighlightColor.getRGB());
             }
-        }
-
-        if (closestVein != null) {
-            RenderUtils.renderTracer(closestVein, GumTuneClientConfig.coalVeinTracerColor.toJavaColor(), event.partialTicks);
+            RenderUtils.renderTracer(lastPos, veinInfo.center, GumTuneClientConfig.coalVeinTracerColor.toJavaColor(), event.partialTicks);
+            lastPos = veinInfo.center;
         }
     }
 
     private void findCoalVeins() {
         if (GumTuneClient.mc.thePlayer == null) return;
 
-        List<Set<BlockPos>> newCoalVeins = new ArrayList<>();
-        BlockPos newClosestVein = null;
         BlockPos playerPos = GumTuneClient.mc.thePlayer.getPosition();
         Set<BlockPos> visited = new HashSet<>();
-        double closestDistSq = Double.MAX_VALUE;
+        List<VeinInfo> foundVeins = new ArrayList<>();
 
         for (int x = -GumTuneClientConfig.coalVeinScanRadius; x <= GumTuneClientConfig.coalVeinScanRadius; x++) {
             for (int y = -GumTuneClientConfig.coalVeinScanRadius; y <= GumTuneClientConfig.coalVeinScanRadius; y++) {
@@ -70,22 +103,40 @@ public class CoalVeinESP {
                         Set<BlockPos> vein = new HashSet<>();
                         findVein(currentPos, vein, visited);
                         if (vein.size() >= GumTuneClientConfig.coalVeinMinSize) {
-                            newCoalVeins.add(vein);
-                            for (BlockPos blockPos : vein) {
-                                double distSq = blockPos.distanceSq(playerPos);
-                                if (distSq < closestDistSq) {
-                                    closestDistSq = distSq;
-                                    newClosestVein = blockPos;
-                                }
-                            }
+                            foundVeins.add(new VeinInfo(vein, playerPos));
                         }
                     }
                 }
             }
         }
+
+        // Create a path of the best veins
+        List<VeinInfo> path = new ArrayList<>();
+        if (!foundVeins.isEmpty()) {
+            // Find the closest vein to the player to start the path
+            foundVeins.sort((v1, v2) -> {
+                if (v1.lowestY <= playerPos.getY() && v2.lowestY > playerPos.getY()) return -1;
+                if (v2.lowestY <= playerPos.getY() && v1.lowestY > playerPos.getY()) return 1;
+                return Double.compare(v1.distanceSqToPlayer, v2.distanceSqToPlayer);
+            });
+            VeinInfo currentVein = foundVeins.remove(0);
+            path.add(currentVein);
+
+            // Iteratively find the next closest vein
+            for (int i = 0; i < MAX_HIGHLIGHTED_VEINS - 1 && !foundVeins.isEmpty(); i++) {
+                final BlockPos lastVeinCenter = currentVein.center;
+                foundVeins.sort((v1, v2) -> {
+                    if (v1.lowestY <= lastVeinCenter.getY() && v2.lowestY > lastVeinCenter.getY()) return -1;
+                    if (v2.lowestY <= lastVeinCenter.getY() && v1.lowestY > lastVeinCenter.getY()) return 1;
+                    return Double.compare(v1.center.distanceSq(lastVeinCenter), v2.center.distanceSq(lastVeinCenter));
+                });
+                currentVein = foundVeins.remove(0);
+                path.add(currentVein);
+            }
+        }
+
         coalVeins.clear();
-        coalVeins.addAll(newCoalVeins);
-        closestVein = newClosestVein;
+        coalVeins.addAll(path);
     }
 
     private void findVein(BlockPos start, Set<BlockPos> vein, Set<BlockPos> visited) {

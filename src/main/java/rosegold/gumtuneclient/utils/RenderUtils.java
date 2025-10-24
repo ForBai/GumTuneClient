@@ -157,6 +157,44 @@ public class RenderUtils {
         renderTracer(blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5, 0.5, color, partialTicks);
     }
 
+    public static void renderTracer(BlockPos from, BlockPos to, Color color, float partialTicks) {
+        Entity render = mc.getRenderViewEntity();
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldRenderer = tessellator.getWorldRenderer();
+
+        final double realX = render.lastTickPosX + (render.posX - render.lastTickPosX) * partialTicks;
+        final double realY = render.lastTickPosY + (render.posY - render.lastTickPosY) * partialTicks;
+        final double realZ = render.lastTickPosZ + (render.posZ - render.lastTickPosZ) * partialTicks;
+
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(-realX, -realY, -realZ);
+        GlStateManager.disableTexture2D();
+        GlStateManager.disableLighting();
+        GL11.glDisable(3553);
+        GlStateManager.enableBlend();
+        GlStateManager.disableAlpha();
+        GL11.glLineWidth(2f);
+        GlStateManager.disableDepth();
+        GlStateManager.depthMask(false);
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+        worldRenderer.begin(3, DefaultVertexFormats.POSITION_COLOR);
+
+        worldRenderer.pos(from.getX() + 0.5, from.getY() + 0.5, from.getZ() + 0.5).color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).endVertex();
+        worldRenderer.pos(to.getX() + 0.5, to.getY() + 0.5, to.getZ() + 0.5).color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).endVertex();
+
+        Tessellator.getInstance().draw();
+
+        GlStateManager.translate(realX, realY, realZ);
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.enableTexture2D();
+        GlStateManager.enableDepth();
+        GlStateManager.depthMask(true);
+        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+        GlStateManager.popMatrix();
+    }
+
     public static void renderBeacon(BlockPos blockPos, Color color, float partialTicks) {
         renderBeacon(blockPos.getX(), blockPos.getY(), blockPos.getZ(), color, partialTicks);
     }
