@@ -590,6 +590,14 @@ public class GumTuneClientConfig extends Config {
     )
     public static OneColor coalVeinHighlightColor = new OneColor(java.awt.Color.BLACK.getRGB());
 
+    @Slider(
+            name = "Max Highlighted Veins",
+            category = RENDER,
+            subcategory = ESPS,
+            min = 1, max = 10
+    )
+    public static int maxHighlightedVeins = 3;
+
     @Page(
             name = "Rift ESPs",
             description = "Special ESPs dedicated to the rift",

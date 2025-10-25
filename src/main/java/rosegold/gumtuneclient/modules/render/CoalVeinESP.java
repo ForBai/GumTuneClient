@@ -22,7 +22,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class CoalVeinESP {
 
     private final List<VeinInfo> coalVeins = new CopyOnWriteArrayList<>();
-    private static final int MAX_HIGHLIGHTED_VEINS = 3;
 
     private static class VeinInfo {
         public final Set<BlockPos> blocks;
@@ -75,7 +74,7 @@ public class CoalVeinESP {
         BlockPos lastPos = playerPos;
 
         // Render ESP boxes for the highlighted veins
-        for (int i = 0; i < Math.min(coalVeins.size(), MAX_HIGHLIGHTED_VEINS); i++) {
+        for (int i = 0; i < Math.min(coalVeins.size(), GumTuneClientConfig.maxHighlightedVeins); i++) {
             VeinInfo veinInfo = coalVeins.get(i);
             for (BlockPos block : veinInfo.blocks) {
                 RenderUtils.renderEspBox(block, event.partialTicks, GumTuneClientConfig.coalVeinHighlightColor.getRGB());
@@ -114,22 +113,14 @@ public class CoalVeinESP {
         List<VeinInfo> path = new ArrayList<>();
         if (!foundVeins.isEmpty()) {
             // Find the closest vein to the player to start the path
-            foundVeins.sort((v1, v2) -> {
-                if (v1.lowestY <= playerPos.getY() && v2.lowestY > playerPos.getY()) return -1;
-                if (v2.lowestY <= playerPos.getY() && v1.lowestY > playerPos.getY()) return 1;
-                return Double.compare(v1.distanceSqToPlayer, v2.distanceSqToPlayer);
-            });
+            foundVeins.sort((v1, v2) -> Double.compare(v1.distanceSqToPlayer, v2.distanceSqToPlayer));
             VeinInfo currentVein = foundVeins.remove(0);
             path.add(currentVein);
 
             // Iteratively find the next closest vein
-            for (int i = 0; i < MAX_HIGHLIGHTED_VEINS - 1 && !foundVeins.isEmpty(); i++) {
+            for (int i = 0; i < GumTuneClientConfig.maxHighlightedVeins - 1 && !foundVeins.isEmpty(); i++) {
                 final BlockPos lastVeinCenter = currentVein.center;
-                foundVeins.sort((v1, v2) -> {
-                    if (v1.lowestY <= lastVeinCenter.getY() && v2.lowestY > lastVeinCenter.getY()) return -1;
-                    if (v2.lowestY <= lastVeinCenter.getY() && v1.lowestY > lastVeinCenter.getY()) return 1;
-                    return Double.compare(v1.center.distanceSq(lastVeinCenter), v2.center.distanceSq(lastVeinCenter));
-                });
+                foundVeins.sort((v1, v2) -> Double.compare(v1.center.distanceSq(lastVeinCenter), v2.center.distanceSq(lastVeinCenter)));
                 currentVein = foundVeins.remove(0);
                 path.add(currentVein);
             }
