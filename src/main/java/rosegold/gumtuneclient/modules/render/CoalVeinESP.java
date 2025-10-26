@@ -79,7 +79,11 @@ public class CoalVeinESP {
             for (BlockPos block : veinInfo.blocks) {
                 RenderUtils.renderEspBox(block, event.partialTicks, GumTuneClientConfig.coalVeinHighlightColor.getRGB());
             }
-            RenderUtils.renderTracer(lastPos, veinInfo.center, GumTuneClientConfig.coalVeinTracerColor.toJavaColor(), event.partialTicks);
+            if (i == 0) {
+                RenderUtils.renderTracer(veinInfo.center, GumTuneClientConfig.coalVeinTracerColor.toJavaColor(), event.partialTicks);
+            } else {
+                RenderUtils.renderTracer(lastPos, veinInfo.center, GumTuneClientConfig.coalVeinTracerColor.toJavaColor(), event.partialTicks);
+            }
             lastPos = veinInfo.center;
         }
     }
