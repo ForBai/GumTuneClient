@@ -52,4 +52,9 @@ public class FrozenTreasureFilter {
             name = "Glacial Talisman"
     )
     public static boolean frozenTreasureGlacialTalisman = true;
+
+    @Switch(
+            name = "Frozen Bait"
+    )
+    public static boolean frozenTreasureFrozenBait = true;
 }
