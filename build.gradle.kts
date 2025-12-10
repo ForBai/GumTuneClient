@@ -67,8 +67,10 @@ dependencies {
     modCompileOnly("cc.polyfrost:oneconfig-$platform:0.2.0-alpha+")
 
     if (platform.isFabric) {
+        // Note: Fabric API version should match Minecraft version when available
+        // For 1.21.8, use the latest compatible version
         val fabricVersion = when (platform.mcMinor) {
-            21 -> "0.110.5+1.21.4"
+            21 -> "0.111.0+1.21.8"  // Update to actual 1.21.8 version when available
             else -> "0.76.0+1.18.2"
         }
         modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
