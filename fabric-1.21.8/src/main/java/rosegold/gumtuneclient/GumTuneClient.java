@@ -6,7 +6,9 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rosegold.gumtuneclient.utils.BlockUtils;
 import rosegold.gumtuneclient.utils.LocationUtils;
+import rosegold.gumtuneclient.utils.PlayerUtils;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -39,6 +41,7 @@ public class GumTuneClient implements ClientModInitializer {
 
 		// Initialize utilities
 		LocationUtils.init();
+		PlayerUtils.init();
 
 		// Register event handlers
 		registerEvents();
@@ -53,6 +56,9 @@ public class GumTuneClient implements ClientModInitializer {
 		// Client tick event - equivalent to TickEvent.ClientTickEvent
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (client.player == null || client.world == null) {
+				if (initialized) {
+					onWorldUnload();
+				}
 				initialized = false;
 				return;
 			}
@@ -92,5 +98,11 @@ public class GumTuneClient implements ClientModInitializer {
 		// Initialize modules and features here
 		// TODO: Load configuration
 		// TODO: Initialize modules
+	}
+
+	private void onWorldUnload() {
+		LOGGER.info("World unloaded - cleaning up");
+		BlockUtils.clearDebugRendering();
+		PlayerUtils.onWorldUnload();
 	}
 }
