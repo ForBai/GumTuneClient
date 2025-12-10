@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class PlayerUtils {
     private static final Random random = new Random();
-    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private static ScheduledExecutorService scheduler;
     
     public static boolean pickaxeAbilityReady = false;
 
@@ -23,6 +23,7 @@ public class PlayerUtils {
      * Initialize player utilities
      */
     public static void init() {
+        scheduler = Executors.newScheduledThreadPool(1);
         // Listen for pickaxe ability messages
         ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
             String text = StringUtils.removeFormatting(message.getString());
@@ -101,5 +102,14 @@ public class PlayerUtils {
      */
     public static void onWorldUnload() {
         pickaxeAbilityReady = false;
+    }
+
+    /**
+     * Shutdown the scheduler to prevent thread leaks
+     */
+    public static void shutdown() {
+        if (scheduler != null && !scheduler.isShutdown()) {
+            scheduler.shutdown();
+        }
     }
 }

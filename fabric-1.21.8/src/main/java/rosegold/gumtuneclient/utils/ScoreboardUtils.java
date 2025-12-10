@@ -78,7 +78,7 @@ public class ScoreboardUtils {
                 .collect(Collectors.toList());
 
         if (list.size() > 15) {
-            scores = Lists.newArrayList(Iterables.skip(list, scores.size() - 15));
+            scores = Lists.newArrayList(Iterables.skip(list, list.size() - 15));
         } else {
             scores = list;
         }

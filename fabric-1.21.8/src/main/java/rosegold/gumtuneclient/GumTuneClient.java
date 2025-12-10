@@ -31,6 +31,7 @@ public class GumTuneClient implements ClientModInitializer {
 	public static boolean debug = false;
 
 	private boolean initialized = false;
+	private ScheduledExecutorService scheduledExecutor;
 
 	@Override
 	public void onInitializeClient() {
@@ -77,17 +78,17 @@ public class GumTuneClient implements ClientModInitializer {
 	}
 
 	private void startScheduledTasks() {
-		ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(1);
+		scheduledExecutor = Executors.newScheduledThreadPool(1);
 		
 		// Schedule tick events at different intervals
 		// Second event - fires every second
-		threadPool.scheduleAtFixedRate(() -> {
+		scheduledExecutor.scheduleAtFixedRate(() -> {
 			// Fire second event to modules that need it
 			// TODO: Implement event bus for modules
 		}, 0, 1, TimeUnit.SECONDS);
 
 		// Millisecond event - fires every millisecond
-		threadPool.scheduleAtFixedRate(() -> {
+		scheduledExecutor.scheduleAtFixedRate(() -> {
 			// Fire millisecond event to modules that need it
 			// TODO: Implement event bus for modules
 		}, 0, 1, TimeUnit.MILLISECONDS);
@@ -104,5 +105,15 @@ public class GumTuneClient implements ClientModInitializer {
 		LOGGER.info("World unloaded - cleaning up");
 		BlockUtils.clearDebugRendering();
 		PlayerUtils.onWorldUnload();
+	}
+
+	/**
+	 * Shutdown hook to clean up resources
+	 */
+	public void shutdown() {
+		if (scheduledExecutor != null && !scheduledExecutor.isShutdown()) {
+			scheduledExecutor.shutdown();
+		}
+		PlayerUtils.shutdown();
 	}
 }
