@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rosegold.gumtuneclient.utils.LocationUtils;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -35,6 +36,9 @@ public class GumTuneClient implements ClientModInitializer {
 		mc = MinecraftClient.getInstance();
 		
 		LOGGER.info("GumTuneClient {} initializing for Minecraft 1.21.8!", VERSION);
+
+		// Initialize utilities
+		LocationUtils.init();
 
 		// Register event handlers
 		registerEvents();
