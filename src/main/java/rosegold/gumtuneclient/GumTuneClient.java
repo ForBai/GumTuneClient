@@ -27,6 +27,7 @@ import rosegold.gumtuneclient.modules.farming.CropPlacer;
 import rosegold.gumtuneclient.modules.farming.PreventRenderingCrops;
 import rosegold.gumtuneclient.modules.farming.VisitorHelpers;
 import rosegold.gumtuneclient.modules.macro.AutoHarp;
+import rosegold.gumtuneclient.modules.macro.AutoFish;
 import rosegold.gumtuneclient.modules.macro.GemstoneMacro;
 import rosegold.gumtuneclient.modules.macro.MobMacro;
 import rosegold.gumtuneclient.modules.mining.GemstoneSackCompactor;
@@ -77,6 +78,7 @@ public class GumTuneClient {
                 new Trackers(),
                 new PowderChestSolver(),
                 new AutoHarp(),
+                new AutoFish(),
                 new ESPs(),
                 new CropPlacer(),
                 new Nuker(),

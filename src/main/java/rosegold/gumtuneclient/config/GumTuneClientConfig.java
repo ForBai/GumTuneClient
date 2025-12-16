@@ -75,6 +75,7 @@ public class GumTuneClientConfig extends Config {
     private transient static final String OLD_MINECRAFT_LOGO = "Old Minecraft Logo";
     private transient static final String GEMSTONE_SACK_COMPACTOR = "Gemstone Sack Compactor";
     private transient static final String COAL_VEIN_ESP = "Coal Vein ESP";
+    private transient static final String AUTO_FISH = "Auto Fish";
 
     @Switch(
             name = "Enabled",
@@ -460,6 +461,38 @@ public class GumTuneClientConfig extends Config {
             subcategory = GEMSTONE_MACRO
     )
     public static boolean aotvGemstoneMacroDebug = false;
+
+    @Switch(
+            name = "Enabled",
+            category = MACRO,
+            subcategory = AUTO_FISH,
+            size = 2
+    )
+    public static boolean autoFish = false;
+
+    @Slider(
+            name = "Recast Delay (ms)",
+            category = MACRO,
+            subcategory = AUTO_FISH,
+            min = 50, max = 1000
+    )
+    public static int autoFishRecastDelay = 300;
+
+    @Switch(
+            name = "Randomize Delay",
+            category = MACRO,
+            subcategory = AUTO_FISH,
+            size = 2
+    )
+    public static boolean autoFishRandomize = false;
+
+    @Slider(
+            name = "Randomness (ms)",
+            category = MACRO,
+            subcategory = AUTO_FISH,
+            min = 0, max = 500
+    )
+    public static int autoFishRandomness = 100;
 
     @Switch(
             name = "Avoid Breaking Stems",
