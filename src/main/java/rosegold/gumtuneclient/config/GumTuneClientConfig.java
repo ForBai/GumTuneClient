@@ -495,6 +495,38 @@ public class GumTuneClientConfig extends Config {
     public static int autoFishRandomness = 100;
 
     @Switch(
+            name = "Kill Mobs (Hyperion)",
+            category = MACRO,
+            subcategory = AUTO_FISH,
+            size = 2
+    )
+    public static boolean autoFishKillMobs = false;
+
+    @Slider(
+            name = "Look Speed (ms)",
+            category = MACRO,
+            subcategory = AUTO_FISH,
+            min = 50, max = 1000
+    )
+    public static int autoFishLookSpeed = 250;
+
+    @Slider(
+            name = "Hyperion Click Delay (ticks)",
+            category = MACRO,
+            subcategory = AUTO_FISH,
+            min = 1, max = 20
+    )
+    public static int autoFishHyperionClickDelay = 2;
+
+    @Slider(
+            name = "Mob Spawn Wait Time (ticks)",
+            category = MACRO,
+            subcategory = AUTO_FISH,
+            min = 1, max = 100
+    )
+    public static int autoFishMobWaitTime = 20;
+
+    @Switch(
             name = "Avoid Breaking Stems",
             category = FARMING,
             subcategory = AVOID_BREAKING_CROPS,
