@@ -6,7 +6,7 @@ pluginManagement {
         maven("https://maven.architectury.dev/")
     }
     plugins {
-        val egtVersion = "0.1.11"
+        val egtVersion = "0.3.1"
         id("gg.essential.multi-version.root") version egtVersion
     }
     resolutionStrategy {
@@ -24,7 +24,8 @@ rootProject.name = mod_name
 rootProject.buildFileName = "root.gradle.kts"
 
 listOf(
-    "1.8.9-forge"
+    "1.8.9-forge",
+    "1.21.8-fabric"
 ).forEach { version ->
     include(":$version")
     project(":$version").apply {

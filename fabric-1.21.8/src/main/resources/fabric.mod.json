@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "gumtuneclient",
+  "version": "${version}",
+  "name": "GumTuneClient",
+  "description": "GumTuneClient is a brand-new quality of life modification for Hypixel SkyBlock",
+  "authors": [
+    "RoseGold"
+  ],
+  "contact": {
+    "homepage": "https://gumtune.net",
+    "sources": "https://github.com/ForBai/GumTuneClient"
+  },
+  "license": "GPL-3.0",
+  "icon": "assets/gumtuneclient/gtc_small.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "rosegold.gumtuneclient.GumTuneClient"
+    ]
+  },
+  "mixins": [
+    "gumtuneclient.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.21.8",
+    "java": ">=21",
+    "fabric-api": "*"
+  },
+  "suggests": {}
+}

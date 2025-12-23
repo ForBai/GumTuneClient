@@ -60,10 +60,21 @@ sourceSets {
 
 repositories {
     maven("https://repo.polyfrost.cc/releases")
+    maven("https://maven.fabricmc.net/")
 }
 
 dependencies {
     modCompileOnly("cc.polyfrost:oneconfig-$platform:0.2.0-alpha+")
+
+    if (platform.isFabric) {
+        // Note: Fabric API version should match Minecraft version when available
+        // For 1.21.8, use the latest compatible version
+        val fabricVersion = when (platform.mcMinor) {
+            21 -> "0.111.0+1.21.8"  // Update to actual 1.21.8 version when available
+            else -> "0.76.0+1.18.2"
+        }
+        modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
+    }
 
     if (platform.isLegacyForge) {
         compileOnly("org.spongepowered:mixin:0.7.11-SNAPSHOT")
@@ -74,7 +85,9 @@ dependencies {
 tasks.processResources {
     inputs.property("id", mod_id)
     inputs.property("name", mod_name)
-    val java = if (project.platform.mcMinor >= 18) {
+    val java = if (project.platform.mcMinor >= 21) {
+        21
+    } else if (project.platform.mcMinor >= 18) {
         17
     } else {
         if (project.platform.mcMinor == 17) 16 else 8
@@ -162,6 +175,11 @@ tasks {
             copy {
                 from("${project.rootProject.rootDir}/versions/1.8.9-forge/build/libs/${mod_name}-${mod_version}.jar")
                 into("${project.rootProject.rootDir}/artifacts")
+            }
+            copy {
+                from("${project.rootProject.rootDir}/versions/1.21.8-fabric/build/libs/${mod_name}-${mod_version}.jar")
+                into("${project.rootProject.rootDir}/artifacts")
+                rename { "${mod_name}-${mod_version}-fabric-1.21.8.jar" }
             }
         }
     }

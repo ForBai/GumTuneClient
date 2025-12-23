@@ -6,7 +6,7 @@
 
 [![GitHub license](https://img.shields.io/github/license/RoseGoldIsntGay/GumTuneClient)](https://img.shields.io/github/license/RoseGoldIsntGay/GumTuneClient)
 [![Total downloads](https://img.shields.io/github/downloads/RoseGoldIsntGay/GumTuneClient/total)](https://github.com/RoseGoldIsntGay/GumTuneClient/releases/latest)
-![Minecraft version](https://img.shields.io/badge/MC%20Version-1.8.9-yellow)
+![Minecraft version](https://img.shields.io/badge/MC%20Version-1.8.9%20%7C%201.21.8-yellow)
   
 [Join The Discord!](https://gumtune.net/discord)
 </div>
